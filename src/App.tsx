@@ -1,9 +1,9 @@
 import './App.css'
 
-import Console from './components/Console';
+import Console from './components/Console.tsx';
 import './components/Console.css';
 
-import VideoPlayer from './components/VideoPlayer';
+import VideoPlayer from './components/VideoPlayer.tsx';
 
 function App() {
     return (

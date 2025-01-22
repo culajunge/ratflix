@@ -1,0 +1,34 @@
+export declare class ConsoleApp {
+    private handleOutput;
+    private hasInitialized;
+    initialize(): void;
+    private currentPath;
+    private currentSearchResult;
+    private currentMediaResult;
+    private currentMediaIndex;
+    private currentSeason;
+    private currentSeasonIndex;
+    private currentEpisodeIndex;
+    API_KEY: any;
+    BASE_URL: string;
+    domainSuffix: string;
+    MOVIE_BASE_URL: string;
+    TV_BASE_URL: string;
+    constructor(handleOutput: (text: string) => void);
+    handleCommand(input: string): Promise<void>;
+    printLogo(): void;
+    getCurrentPath(): string;
+    private DisplaySearchResult;
+    private displayHelp;
+    private toRoot;
+    private selectMedia;
+    private selectByNameOrIndex;
+    private stripDownArg;
+    private listItems;
+    private playMedia;
+    private playNextEpisode;
+    private playMovie;
+    private playEpisode;
+    private clearConsole;
+    private downloadMedia;
+}
