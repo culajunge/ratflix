@@ -12,6 +12,7 @@ const Console: React.FC = () => {
             setHistory(prev => [...prev, output]);
         }
     }));
+
     const formatCommandLine = (line: string) => {
         if (line.startsWith('>')) {
             // This is a command input line
