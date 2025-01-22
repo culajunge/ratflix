@@ -1,0 +1,22 @@
+.video-container {
+    flex: 1;
+    background:  #1e1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-placeholder {
+    color: #444;
+    font-size: 48px;
+}
+
+iframe {
+    border: none;
+}
+
+.video-icon {
+    width: 64px;  /* adjust size as needed */
+    height: auto;
+}
+
