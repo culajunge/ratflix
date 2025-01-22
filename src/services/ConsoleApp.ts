@@ -9,6 +9,7 @@ export class ConsoleApp {
         if (this.hasInitialized) return;
         this.hasInitialized = true;
         this.printLogo();
+        this.handleOutput('Welcome to ratflix: ' + import.meta.env.VITE_TMDB_API_KEY);
     }
 
     private currentPath: string = '';
