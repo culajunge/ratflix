@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [react()],
   base: '/ratflix/',
   build: {
-    outDir: 'docs'
+    outDir: 'dist'
   }
 })
