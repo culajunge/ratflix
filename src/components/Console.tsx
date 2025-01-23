@@ -47,6 +47,7 @@ const Console: React.FC = () => {
         );
     };
     const [cursorPosition, setCursorPosition] = useState(0);
+    const [isFocused, setIsFocused] = useState(true);
     const measureText = (text: string) => {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
@@ -149,8 +150,13 @@ const Console: React.FC = () => {
                         <span style={{color: 'var(--path-color)'}}>{consoleAppRef.current.getCurrentPath()}</span>
                         <span style={{color: 'var(--prompt-color)'}}>/&gt;</span>
                         {' '}
-                        <div className="input-wrapper" style={{'--cursor-position': `${measureText(input)}px`} as React.CSSProperties}>
-                            {renderInput(input)}
+                        <div
+                            className="input-wrapper"
+                            style={{
+                                '--cursor-visible': isFocused ? '1' : '0'
+                            } as React.CSSProperties}
+                        >
+                        {renderInput(input)}
                             <textarea
                                 ref={inputRef}
                                 value={input}
@@ -158,6 +164,8 @@ const Console: React.FC = () => {
                                     setInput(e.target.value);
                                     setCursorPosition(e.target.selectionStart || 0);
                                 }}
+                                onFocus={() => setIsFocused(true)}
+                                onBlur={() => setIsFocused(false)}
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault();

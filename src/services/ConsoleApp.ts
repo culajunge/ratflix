@@ -534,12 +534,14 @@ export class ConsoleApp {
             return;
         }
 
+        // Increment the index first
+        this.currentEpisodeIndex++;
+
         this.playEpisode(MovieDbService.getEpisodeUrl(
             this.currentMediaResult.id,
             this.currentSeason.season_number,
-            this.currentEpisodeIndex + 1
+            this.currentEpisodeIndex
         ));
-        this.currentEpisodeIndex++;
     }
 
     private playMovie(movieId: string): void {

@@ -72,11 +72,15 @@ textarea {
     background-color: #fff;
     animation: blink 1s step-end infinite;
     margin-left: 1px;
-    transform: translateY(2px); /* This will center our cursor nicely */
+    transform: translateY(2px);
+    opacity: var(--cursor-visible, 1);
+    transition: opacity 0.1s;
 }
+
 @keyframes blink {
     50% { opacity: 0; }
 }
+
 
 
 
