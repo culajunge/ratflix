@@ -1,6 +1,8 @@
 import { MovieDbService } from './MovieDbService.ts';
 import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
 import {WatchProgress} from '../types/WatchHistory.ts';
+import {Simulate} from "react-dom/test-utils";
+import progress = Simulate.progress;
 
 export class ConsoleApp {
 
@@ -84,7 +86,7 @@ export class ConsoleApp {
 
                 case 'n':
                 case 'next':
-                    this.playNextEpisode();
+                    await this.playNextEpisode();
                     break;
 
                 case 'c':
@@ -113,6 +115,17 @@ export class ConsoleApp {
                 case 'lastnext':
                 case 'lnext':
                     await this.playLastWatched(1);
+                    break;
+
+                case 'pr':
+                case 'prov':
+                case 'provider':
+                    this.handleProvider(argument);
+                    break;
+
+                case 'tgl':
+                case 'toggle':
+                    this.toggleVideo();
                     break;
 
                 case 'echo':
@@ -184,8 +197,10 @@ export class ConsoleApp {
             "l                - Play last watched episode",
             "ln               - Play next episode of last watched episode",
             "hs               - Display watch history",
+            "pr              - Display available providers",
             "clear           - Clear the console",
             "pwd             - Print the current path",
+            "tgl             - toggle video player",
             "help | h        - Display this help message",
             "exit            - Exit the application"
         ];
@@ -394,7 +409,7 @@ export class ConsoleApp {
                 }
 
                 if (this.currentMediaResult.media_type === "tv") {
-                    this.playEpisode(MovieDbService.getEpisodeUrl(this.currentMediaResult.id, 1, 1));
+                    this.playEpisode(await MovieDbService.getEpisodeUrl(this.currentMediaResult.id, 1, 1));
                     return;
                 }
             }
@@ -409,7 +424,7 @@ export class ConsoleApp {
 
                     // If we're in a season and got a number, play that episode
                     if (!isNaN(num) && this.currentSeason) {
-                        this.playEpisode(MovieDbService.getEpisodeUrl(
+                        this.playEpisode(await MovieDbService.getEpisodeUrl(
                             this.currentMediaResult!.id,
                             this.currentSeason.season_number,
                             num
@@ -422,13 +437,15 @@ export class ConsoleApp {
                     if (!isNaN(num) && this.currentSearchResult) {
                         const media = this.currentSearchResult.results[num - 1];
                         if (media.media_type === "movie") {
+                            this.currentMediaResult = media;
+                            this.currentMediaResult.media_type = "movie";
                             this.playMovie(media.id.toString());
                         } else if (media.media_type === "tv") {
                             this.currentMediaResult = media;
                             this.currentSeason = await MovieDbService.getSeasonDetails(media.id, 1);
                             this.currentEpisodeIndex = 1;
                             this.currentPath = `${media.name}/Season 1`;
-                            this.playEpisode(MovieDbService.getEpisodeUrl(media.id, 1, 1));
+                            this.playEpisode(await MovieDbService.getEpisodeUrl(media.id, 1, 1));
                             console.log("Duplicate code 1");
                         }
                         break;
@@ -448,7 +465,7 @@ export class ConsoleApp {
                         this.currentSeason = await MovieDbService.getSeasonDetails(media.showId, media.seasonNumber);
                         this.currentEpisodeIndex = media.episodeNumber + 1;
                         this.currentPath = `${media.showName}/Season ${media.seasonNumber}`;
-                        this.playEpisode(MovieDbService.getEpisodeUrl(media.showId, media.seasonNumber, media.episodeNumber + 1));
+                        this.playEpisode(await MovieDbService.getEpisodeUrl(media.showId, media.seasonNumber, media.episodeNumber + 1));
                         break;
                     }
 
@@ -460,13 +477,15 @@ export class ConsoleApp {
                     if (this.currentSearchResult?.results?.length > 0) {
                         const media = this.currentSearchResult.results[0];
                         if (media.media_type === "movie") {
+                            this.currentMediaResult = media;
+                            this.currentMediaResult.media_type = "movie";
                             this.playMovie(media.id.toString());
                         } else if (media.media_type === "tv") {
                             this.currentMediaResult = media;
                             this.currentSeason = await MovieDbService.getSeasonDetails(media.id, 1);
                             this.currentEpisodeIndex = 1;
                             this.currentPath = `${media.name}/Season 1`;
-                            this.playEpisode(MovieDbService.getEpisodeUrl(media.id, 1, 1));
+                            this.playEpisode(await MovieDbService.getEpisodeUrl(media.id, 1, 1));
                             console.log("Duplicate code 2");
                         }
                     }
@@ -482,7 +501,7 @@ export class ConsoleApp {
                             this.currentSeason = await MovieDbService.getSeasonDetails(this.currentMediaResult.id, seasonNum);
                             this.currentEpisodeIndex = epNum;
                             this.currentPath = `${this.currentMediaResult.name}/Season ${seasonNum}`;
-                            this.playEpisode(MovieDbService.getEpisodeUrl(this.currentMediaResult.id, seasonNum, epNum));
+                            this.playEpisode(await MovieDbService.getEpisodeUrl(this.currentMediaResult.id, seasonNum, epNum));
                         }
                     } else {
                         // Need to search for the show first
@@ -496,7 +515,7 @@ export class ConsoleApp {
                                 this.currentSeason = await MovieDbService.getSeasonDetails(show.id, seasonNum);
                                 this.currentEpisodeIndex = 1;
                                 this.currentPath = `${show.name}/Season ${seasonNum}`;
-                                this.playEpisode(MovieDbService.getEpisodeUrl(show.id, seasonNum, 1));
+                                this.playEpisode(await MovieDbService.getEpisodeUrl(show.id, seasonNum, 1));
                             }
                         }
                     }
@@ -514,7 +533,7 @@ export class ConsoleApp {
                             this.currentSeason = await MovieDbService.getSeasonDetails(show.id, seasonNum);
                             this.currentEpisodeIndex = epNum;
                             this.currentPath = `${show.name}/Season ${seasonNum}`;
-                            this.playEpisode(MovieDbService.getEpisodeUrl(show.id, seasonNum, epNum));
+                            this.playEpisode(await MovieDbService.getEpisodeUrl(show.id, seasonNum, epNum));
                         }
                     }
                     break;
@@ -528,7 +547,7 @@ export class ConsoleApp {
         }
     }
 
-    private playNextEpisode(): void {
+    private async playNextEpisode(): Promise<void> {
         if (this.currentMediaResult === null || this.currentSeason === null || this.currentEpisodeIndex === -1) {
             this.handleOutput("I do not know which episode was your last.");
             return;
@@ -537,25 +556,23 @@ export class ConsoleApp {
         // Increment the index first
         this.currentEpisodeIndex++;
 
-        this.playEpisode(MovieDbService.getEpisodeUrl(
+        this.playEpisode(await MovieDbService.getEpisodeUrl(
             this.currentMediaResult.id,
             this.currentSeason.season_number,
             this.currentEpisodeIndex
         ));
     }
 
-    private playMovie(movieId: string): void {
-        this.handleOutput("Playing movie...");
-        const url = `${this.MOVIE_BASE_URL}${movieId}`;
+    private async playMovie(movieId: string): Promise<void> {
+        console.log("Dispatching playVideo event with URL:", `${this.MOVIE_BASE_URL}${movieId}`); // Debug log
+        this.handleOutput(`Playing: ${this.currentMediaResult!.title ?? this.currentMediaResult!.name}`);
+        const url = await MovieDbService.getMovieUrl(movieId);
+        this.handleOutput(`URL: ${url}`);
         window.dispatchEvent(new CustomEvent('playVideo', { detail: url }));
     }
 
-    private playEpisode(url: string, epnum = -1): void {
-        if(epnum != -1) {
-            this.handleOutput("Playing episode " + epnum + "...");
-        } else {
-            this.handleOutput("Playing episode...");
-        }
+    private async playEpisode(url: string): Promise<void> {
+        this.handleOutput(`Playing: ${this.currentMediaResult?.name} S${this.currentSeason?.season_number} E${this.currentEpisodeIndex}`);
 
         // Save progress when playing an episode
         if (this.currentMediaResult?.media_type === 'tv') {
@@ -660,7 +677,7 @@ export class ConsoleApp {
                 this.currentEpisodeIndex = lastWatched.episodeNumber + offset;
                 this.currentPath = `${lastWatched.showName}/Season ${lastWatched.seasonNumber}`;
 
-                this.playEpisode(MovieDbService.getEpisodeUrl(
+                this.playEpisode(await MovieDbService.getEpisodeUrl(
                     lastWatched.showId,
                     lastWatched.seasonNumber,
                     this.currentEpisodeIndex
@@ -678,7 +695,7 @@ export class ConsoleApp {
             this.currentEpisodeIndex = progress.episodeNumber + offset;
             this.currentPath = `${this.currentMediaResult.name}/Season ${progress.seasonNumber}`;
 
-            this.playEpisode(MovieDbService.getEpisodeUrl(
+            this.playEpisode(await MovieDbService.getEpisodeUrl(
                 this.currentMediaResult.id,
                 progress.seasonNumber,
                 this.currentEpisodeIndex
@@ -688,6 +705,32 @@ export class ConsoleApp {
         }
 
         console.log('Current Episode Index:', this.currentEpisodeIndex, 'Offset:', offset);
+    }
+
+    private toggleVideo(): void {
+        window.dispatchEvent(new CustomEvent('toggleVideo'));
+        this.handleOutput("Video player visibility toggled");
+    }
+
+    private handleProvider(arg: string): void {
+        if (arg.length === 0) {
+            // List all providers with their indices
+            MovieDbService.vidProviders.forEach((provider, index) => {
+                const current = index === MovieDbService.currentVidProviderIndex ? " (current)" : "";
+                this.handleOutput(`${index + 1}: ${provider.name}${current}`);
+            });
+            return;
+        }
+
+        const newIndex = parseInt(arg[0]) - 1;
+        if (isNaN(newIndex) || newIndex < 0 || newIndex >= MovieDbService.vidProviders.length) {
+            this.handleOutput(`Invalid provider index. Please choose between 0 and ${MovieDbService.vidProviders.length - 1}`);
+            return;
+        }
+
+        MovieDbService.currentVidProviderIndex = newIndex;
+        localStorage.setItem('vidProviderIndex', newIndex.toString());
+        this.handleOutput(`Video provider set to: ${MovieDbService.vidProviders[newIndex].name}`);
     }
 
 }

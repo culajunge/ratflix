@@ -48,6 +48,17 @@
   position: absolute;
   left: 0;
   top: 0;
+  gap: 0;
+}
+
+.video-container {
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.console-container {
+  flex: 1;
+  transition: all 0.3s ease;
 }
 
 

@@ -4,25 +4,28 @@ import './VideoPlayer.css';
 export const VideoPlayer: React.FC = () => {
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
-    // Expose this method to be called from ConsoleApp
-    const playVideo = (url: string) => {
-        setVideoUrl(url);
+    const handlePlay = (e: CustomEvent) => {
+        console.log("Video URL received:", e.detail);
+        setVideoUrl(e.detail);
     };
 
     useEffect(() => {
-        const handlePlay = (e: CustomEvent) => {
-            setVideoUrl(e.detail);
-        };
-
         window.addEventListener('playVideo', handlePlay as EventListener);
+
+        // Get any existing video URL from the event that triggered the component mount
+        const currentEvent = window.ratflixCurrentVideo;
+        if (currentEvent) {
+            handlePlay(currentEvent);
+        }
+
         return () => window.removeEventListener('playVideo', handlePlay as EventListener);
     }, []);
-
 
     return (
         <div className="video-container">
             {videoUrl ? (
                 <iframe
+                    key={videoUrl} // Force iframe refresh on URL change
                     src={videoUrl}
                     allow="fullscreen"
                     width="100%"
