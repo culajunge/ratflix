@@ -1,50 +1,114 @@
-# React + TypeScript + Vite
+# 🎬 Ratflix
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A command-line interface for browsing and streaming movies and TV shows. Navigate through content using familiar terminal-style commands.
 
-Currently, two official plugins are available:
+## Features
+- Search for movies and TV shows
+- Browse seasons and episodes
+- Track watch history across shows
+- Resume from last watched episodes
+- Intuitive navigation system
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Commands
 
-## Expanding the ESLint configuration
+| Command | Description |
+|---------|-------------|
+| `f <search term>` | Find movies and TV shows |
+| `cd <index>` | Navigate to selected media |
+| `cd ..` | Go back one level |
+| `ls` | List available content |
+| `p` | Play current media |
+| `p <index>` | Play specific episode |
+| `n` | Play next episode |
+| `l` | Resume last watched episode |
+| `ln` | Play next episode of last watched show |
+| `hs` | Display watch history |
+| `clear` | Clear console |
+| `pwd` | Show current path |
+| `help` | Display all commands |
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+# Command Examples
 
-- Configure the top-level `parserOptions` property like this:
+## Navigation
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Search for content
+```bash
+f stranger things
+f inception
+find Better call Saul
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Navigate using index or name
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+```bash
+cd 1
+cd Breaking Bad
+cd Breaking Bad/2
+```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### Go back to root
+```bash
+cd
+cd ..
+```
+
+## Playing Content
+
+### Play current media
+```bash
+p
+```
+
+### Play specific episode
+```bash
+p 5
+p Money Heist
+p Breaking Bad/2
+p The Wire/3/7
+```
+
+
+### Continue watching
+```bash
+l
+ln
+n
+```
+
+# History & Information
+
+### View watch history
+```bash
+hs
+history 
+```
+
+### Check current location
+```bash
+pwd
+```
+
+### List available content
+```bash
+ls
+```
+
+# Command flow example
+
+```bash
+f breaking bad
+cd 1
+ls
+cd 2
+p 3
+n
+n
+cd ..
+ls
+
+*next day
+
+ln
+n
+n
 ```
