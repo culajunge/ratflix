@@ -1,5 +1,6 @@
 import { MovieDbService } from './MovieDbService.ts';
 import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
+import {WatchProgress} from '../types/WatchHistory.ts';
 
 export class ConsoleApp {
 
@@ -118,6 +119,14 @@ export class ConsoleApp {
                     this.Echo(argument);
                     break;
 
+                case 'gh':
+                case 'github':
+                case 'cr':
+                case 'credits':
+                case 'credit':
+                    this.OpenGitHubRepo();
+                    break;
+
                 default:
                     this.handleOutput("Unknown command. Type 'help' for available commands.");
                     break;
@@ -143,6 +152,11 @@ export class ConsoleApp {
 
     public getCurrentPath(): string {
         return this.currentPath;
+    }
+
+    private OpenGitHubRepo(): void {
+        const repoUrl = "https://github.com/culajunge/ratflix";
+        window.open(repoUrl, "_blank");
     }
 
     private DisplaySearchResult(): void{
