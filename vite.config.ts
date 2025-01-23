@@ -7,5 +7,8 @@ export default defineConfig({
   base: '/ratflix/',
   build: {
     outDir: 'dist'
+  },
+  define: {
+    'process.env': {}
   }
 })
