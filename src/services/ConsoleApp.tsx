@@ -11,8 +11,11 @@ export class ConsoleApp {
     public initialize(): void {
         if (this.hasInitialized) return;
         this.hasInitialized = true;
+        this.applySettings();
         this.printLogo();
     }
+
+    private defaultPromptSymbol = "/>";
 
     private currentPath: string = '';
     private currentSearchResult: SearchResult | null = null;
@@ -128,6 +131,13 @@ export class ConsoleApp {
                     this.toggleVideo();
                     break;
 
+                case 'cust':
+                case 'custom':
+                    const [command2, ...args2] = input.trim().split(' ');
+                    const argument2 = args2.join(' ');
+                    await this.handleCustomization(argument2);
+                    break;
+
                 case 'echo':
                     this.Echo(argument);
                     break;
@@ -160,7 +170,9 @@ export class ConsoleApp {
     }
 
     public printLogo(): void {
-        this.handleOutput('<span style="color: #e74856;", "fontweight: bold">ratflix</span>');
+        const settings = this.loadSettings();
+        var title = settings['--title-text'].replace(/['"]/g, '');
+        this.handleOutput(`<span style="color: ${settings['--title-color']};font-weight: bold">${title}</span>`);
     }
 
     public getCurrentPath(): string {
@@ -201,6 +213,7 @@ export class ConsoleApp {
             "clear           - Clear the console",
             "pwd             - Print the current path",
             "tgl             - toggle video player",
+            "cust            - Customize colors c[colorindex], prompt symbol ps and title t",
             "help | h        - Display this help message",
             "exit            - Exit the application"
         ];
@@ -567,7 +580,6 @@ export class ConsoleApp {
         console.log("Dispatching playVideo event with URL:", `${this.MOVIE_BASE_URL}${movieId}`); // Debug log
         this.handleOutput(`Playing: ${this.currentMediaResult!.title ?? this.currentMediaResult!.name}`);
         const url = await MovieDbService.getMovieUrl(movieId);
-        this.handleOutput(`URL: ${url}`);
         window.dispatchEvent(new CustomEvent('playVideo', { detail: url }));
     }
 
@@ -731,6 +743,138 @@ export class ConsoleApp {
         MovieDbService.currentVidProviderIndex = newIndex;
         localStorage.setItem('vidProviderIndex', newIndex.toString());
         this.handleOutput(`Video provider set to: ${MovieDbService.vidProviders[newIndex].name}`);
+    }
+
+
+    private handleCustomization(args: string): void {
+
+        if (args === '') {
+            this.handleOutput(` Available customization commands:
+
+Colors: cust c1 - Path color (current: ${this.loadSettings()['--path-color']}) 
+cust c2 - Prompt color (current: ${this.loadSettings()['--prompt-color']}) 
+cust c3 - Command color (current: ${this.loadSettings()['--command-color']}) 
+cust c4 - Arguments color (current: ${this.loadSettings()['--args-color']}) 
+cust c5 - Title color (current: ${this.loadSettings()['--title-color']}) 
+cust c6 - Background color (current: ${this.loadSettings()['--background-color']})
+cust c7 - Text output color (current: ${this.loadSettings()['--output-color']})
+
+cust t - Change title text (current: ${this.loadSettings()['title-text']}) 
+cust ps - Change prompt symbol (current: ${this.loadSettings()['--prompt-symbol']}) 
+cust r - Reset all settings to default
+
+Example: cust c1 ff0000`);
+            return;
+        }
+
+        if (args.toLowerCase() === 'cr') {
+            localStorage.removeItem('consoleSettings');
+            this.handleOutput("Settings reset to default: Reload site to apply");
+            this.applySettings(); return;
+        }
+
+
+
+        if (args.toLowerCase() === 'r' || args.toLowerCase() === 'reset') {
+            localStorage.removeItem('consoleSettings');
+            this.handleOutput("Settings reset to default: Reload site to apply");
+            this.applySettings();
+            return;
+        }
+
+        const [type, value] = args.split(' ');
+
+        if (type.toLowerCase() === 'ps' || type.toLowerCase() === 'prompt') {
+            const settings = this.loadSettings();
+            settings['--prompt-symbol'] = value;
+            localStorage.setItem('consoleSettings', JSON.stringify(settings));
+            document.documentElement.style.setProperty('--prompt-symbol', value);
+            return;
+        }
+
+        if (!type || !value) {
+            this.handleOutput("Invalid format. Use: cust c[1-4] <hex color code>");
+            return;
+        }
+
+        if (type.toLowerCase() === 't' || type.toLowerCase() === 'title') {
+            const settings = this.loadSettings();
+            settings['--title-text'] = value;
+            localStorage.setItem('consoleSettings', JSON.stringify(settings));
+            this.handleOutput(`Title updated to: ${value}`);
+            this.printLogo();
+            return;
+        }
+
+        const colorMap: { [key: string]: string } = {
+            'c1': '--path-color',
+            'C1': '--path-color',
+            'color1': '--path-color',
+            'c2': '--prompt-color',
+            'C2': '--prompt-color',
+            'color2': '--prompt-color',
+            'c3': '--command-color',
+            'C3': '--command-color',
+            'color3': '--command-color',
+            'c4': '--args-color',
+            'C4': '--args-color',
+            'color4': '--args-color',
+            'c5': '--title-color',
+            'C5': '--title-color',
+            'color5': '--title-color',
+            'c6': '--background-color',
+            'C6': '--background-color',
+            'color6': '--background-color',
+            'c7': '--output-color',
+            'C7': '--output-color',
+            'color7': '--output-color',
+        };
+
+        const cssVariable = colorMap[type.toLowerCase()];
+        if (!cssVariable) {
+            this.handleOutput("Invalid color index. Use c1, c2, c3, or c4");
+            return;
+        }
+
+        let formattedColor = value.startsWith('#') ? value : `#${value}`;
+
+        if (!/^#[0-9A-Fa-f]{6}$/.test(formattedColor)) {
+            this.handleOutput("Invalid hex color code. Use format: RRGGBB or #RRGGBB");
+            return;
+        }
+
+        document.documentElement.style.setProperty(cssVariable, formattedColor);
+
+        const settings = this.loadSettings();
+        settings[cssVariable] = formattedColor;
+        localStorage.setItem('consoleSettings', JSON.stringify(settings));
+
+        this.handleOutput(`Updated ${cssVariable} to ${formattedColor}`);
+
+    }
+
+    private loadSettings(): { [key: string]: string } {
+        const rootStyles = getComputedStyle(document.documentElement);
+        const defaultSettings = {
+            '--path-color': rootStyles.getPropertyValue('--path-color').trim(),
+            '--prompt-color': rootStyles.getPropertyValue('--prompt-color').trim(),
+            '--command-color': rootStyles.getPropertyValue('--command-color').trim(),
+            '--args-color': rootStyles.getPropertyValue('--args-color').trim(),
+            '--prompt-symbol': rootStyles.getPropertyValue('--prompt-symbol').trim() || this.defaultPromptSymbol,
+            '--title-color': rootStyles.getPropertyValue('--title-color').trim(),
+            '--title-text': rootStyles.getPropertyValue('--title-text').trim(),
+            '--background-color': rootStyles.getPropertyValue('--background-color').trim(),
+            '--output-color': rootStyles.getPropertyValue('--output-color').trim(),
+        };
+
+        const savedSettings = localStorage.getItem('consoleSettings');
+        return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
+    }
+
+    private applySettings(): void {
+        const settings = this.loadSettings();
+            Object.entries(settings).forEach(([variable, value]) => { document.documentElement.style.setProperty(variable, value);
+        });
     }
 
 }

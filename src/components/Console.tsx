@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ConsoleApp } from '../services/ConsoleApp.ts';
+import { ConsoleApp } from '../services/ConsoleApp.tsx';
 
 const Console: React.FC = () => {
     const [input, setInput] = useState('');
@@ -25,7 +25,7 @@ const Console: React.FC = () => {
             return (
                 <>
                     <span style={{color: 'var(--path-color)'}}>{path}</span>
-                    <span style={{color: 'var(--prompt-color)'}}>/&gt;</span>
+                    <span style={{color: 'var(--prompt-color)'}}> {getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
                     {' '}
                     <span style={{color: 'var(--command-color)'}}>{command}</span>
                     {args && <span style={{color: 'var(--args-color)'}}> {args}</span>}
@@ -66,7 +66,7 @@ const Console: React.FC = () => {
         const formattedCommand = (
             <>
                 <span style={{color: 'var(--path-color)'}}>{currentPathSnapshot}</span>
-                <span style={{color: 'var(--prompt-color)'}}>/&gt;</span>
+                <span style={{color: 'var(--prompt-color)'}}> {getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
                 {' '}
                 <span style={{color: 'var(--command-color)'}}>{command.split(' ')[0]}</span>
                 {command.split(' ').slice(1).join(' ') &&
@@ -148,7 +148,7 @@ const Console: React.FC = () => {
                     ))}
                     <div className="input-line">
                         <span style={{color: 'var(--path-color)'}}>{consoleAppRef.current.getCurrentPath()}</span>
-                        <span style={{color: 'var(--prompt-color)'}}>/&gt;</span>
+                        <span style={{color: 'var(--prompt-color)'}}> {getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
                         {' '}
                         <div
                             className="input-wrapper"

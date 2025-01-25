@@ -4,19 +4,23 @@
     --prompt-color: #ffffff;   /* Hot Pink */
     --command-color: #e74856;  /* Electric Blue */
     --args-color: #cbcbcb;     /* Soft Silver */
+    --prompt-symbol: "/>";
+    --title-color: #e74856;
+    --title-text: 'ratflix';
+    --background-color: #1e1e1e;
+    --output-color: #fff;
 }
 
 .console-container {
     flex: 1;
     width: 100vw;
     height: 100vh;
-    background-color: #1e1e1e;
-    color: #fff;
-    font-family: 'Courier New', Courier, monospace;
-    overflow: hidden;
+    background-color: var(--background-color);
+    color: var(--output-color);
+    font-family: 'Courier New', Courier,
+    monospace; overflow: hidden;
     cursor: text;
-    text-align: left;
-    padding: 20px;
+    text-align: left; padding: 20px;
 }
 
 .console {
