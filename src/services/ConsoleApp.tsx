@@ -8,7 +8,7 @@ export class ConsoleApp {
 
     private hasInitialized = false;
 
-    public initialize(): void {
+    public async initialize(): Promise<void> {
         if (this.hasInitialized) return;
         this.hasInitialized = true;
         this.applySettings();
@@ -762,23 +762,64 @@ cust c7 - Text output color (current: ${this.loadSettings()['--output-color']})
 cust t - Change title text (current: ${this.loadSettings()['title-text']}) 
 cust ps - Change prompt symbol (current: ${this.loadSettings()['--prompt-symbol']}) 
 cust r - Reset all settings to default
+cust exp - Export settings to JSON
+cust imp - Import settings from JSON
 
 Example: cust c1 ff0000`);
+            return;
+        }
+
+        if(args.toLowerCase() === 'exp' || args.toLowerCase() === 'export'){
+            this.exportSettings();
+            return;
+        }
+
+        if (args.toLowerCase().startsWith('imp')) {
+            const jsonStart = args.indexOf('{');
+            if (jsonStart !== -1) {
+                const jsonString = args.slice(jsonStart);
+                this.importSettings(jsonString);
+                return;
+            }
+        }
+
+
+        if(args.toLowerCase() === 'imp' || args.toLowerCase() === 'import') {
+            const jsonString = args;
+            this.importSettings(jsonString);
             return;
         }
 
         if (args.toLowerCase() === 'cr') {
             localStorage.removeItem('consoleSettings');
             this.handleOutput("Settings reset to default: Reload site to apply");
-            this.applySettings(); return;
+            this.applySettings();
+            return;
         }
 
 
 
         if (args.toLowerCase() === 'r' || args.toLowerCase() === 'reset') {
             localStorage.removeItem('consoleSettings');
-            this.handleOutput("Settings reset to default: Reload site to apply");
-            this.applySettings();
+
+            const defaultSettings = {
+                '--path-color': '#868686',
+                '--prompt-color': '#ffffff',
+                '--command-color': '#e74856',
+                '--args-color': '#cbcbcb',
+                '--prompt-symbol': '/>',
+                '--title-color': '#e74856',
+                '--title-text': 'ratflix',
+                '--background-color': '#1e1e1e',
+                '--output-color': '#fff'
+            };
+
+            Object.entries(defaultSettings).forEach(([variable, value]) => {
+                document.documentElement.style.setProperty(variable, value);
+            });
+
+            this.handleOutput("Settings reset to default");
+            this.printLogo();
             return;
         }
 
@@ -875,6 +916,51 @@ Example: cust c1 ff0000`);
         const settings = this.loadSettings();
             Object.entries(settings).forEach(([variable, value]) => { document.documentElement.style.setProperty(variable, value);
         });
+    }
+
+    private exportSettings(): void {
+        const settings = this.loadSettings();
+        const jsonOutput = JSON.stringify(settings, null, 2);
+
+        const themeName = settings['--title-text'].replace(/ /g, '-');
+        this.handleOutput(`\`\`\`${themeName} theme`);
+        this.handleOutput(jsonOutput);
+        this.handleOutput('```');
+    }
+
+    private importSettings(jsonString: string): void {
+        try {
+            // Remove any markdown code block markers if present
+            const cleanJson = jsonString.replace(/```json|```/g, '').trim();
+            const newSettings = JSON.parse(cleanJson);
+
+            // Validate that all required properties exist
+            const requiredKeys = [
+                '--path-color',
+                '--prompt-color',
+                '--command-color',
+                '--args-color',
+                '--title-color',
+                '--background-color',
+                '--output-color',
+                '--prompt-symbol',
+                '--title-text'
+            ];
+
+            const hasAllKeys = requiredKeys.every(key => key in newSettings);
+            if (!hasAllKeys) {
+                this.handleOutput('Invalid settings format: Missing required properties');
+                return;
+            }
+
+            // Save to localStorage and apply
+            localStorage.setItem('consoleSettings', JSON.stringify(newSettings));
+            this.applySettings();
+            this.handleOutput('Theme imported successfully! New settings applied.');
+            this.printLogo(); // Refresh the logo with new colors
+        } catch (error) {
+            this.handleOutput('Invalid JSON format. Please check your input.');
+        }
     }
 
 }

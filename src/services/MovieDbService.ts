@@ -1,4 +1,5 @@
 import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
+import {SerienStreamClient, Series} from 'serienstreamapi';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -8,6 +9,8 @@ const domainSuffix1 = "xyz";
 const MOVIE_BASE_URL_1 = `https://vidsrc.${domainSuffix1}/embed/movie?tmdb=`;
 const TV_BASE_URL_1 = `https://vidsrc.${domainSuffix1}/embed/tv?tmdb=`;
 
+const clientAnime = new SerienStreamClient("https://aniworld.to/", "animes", false);
+const clientSerie = new SerienStreamClient("https://aniworld.to/", "serien", false);
 
 export class MovieDbService {
 
@@ -23,6 +26,12 @@ export class MovieDbService {
         },
         {
             name: "autoembed"
+        },
+        {
+            name: "Germanus Animus"
+        },
+        {
+            name: "Germanus Serius"
         }
     ];
 
@@ -133,6 +142,16 @@ export class MovieDbService {
     static getTvShowUrl4(showId: string, season: number, episode: number): string {
         const TV_BASE_URL_4 = `https://player.autoembed.cc/embed/tv/${showId}/${season}/${episode}`;
         return TV_BASE_URL_4;
+    }
+
+    static async getGAnime(search: string): Promise<Series> {
+        const series = await clientAnime.getSeries(search);
+        return series;
+    }
+
+    static async getGAnimeDescription(search: string): Promise<string> {
+        const series = await clientAnime.getSeries(search);
+        return series.description;
     }
 
 
