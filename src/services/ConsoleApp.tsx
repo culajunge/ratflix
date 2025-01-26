@@ -566,8 +566,12 @@ export class ConsoleApp {
             return;
         }
 
-        // Increment the index first
-        this.currentEpisodeIndex++;
+        if(this.currentSeason.episodes.length === this.currentEpisodeIndex) {
+            this.currentEpisodeIndex = 1;
+            this.currentSeason = await MovieDbService.getSeasonDetails(this.currentMediaResult.id, this.currentSeason.season_number + 1);
+        }else{
+            this.currentEpisodeIndex++;
+        }
 
         this.playEpisode(await MovieDbService.getEpisodeUrl(
             this.currentMediaResult.id,
