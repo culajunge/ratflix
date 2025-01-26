@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ConsoleApp } from '../services/ConsoleApp.tsx';
+import {ConsoleStore} from "../store/consoleStore";
 
 const Console: React.FC = () => {
     const [input, setInput] = useState('');
@@ -120,6 +121,7 @@ const Console: React.FC = () => {
     // Initial focus and scroll
     // One-time initialization
     useEffect(() => {
+        ConsoleStore.setConsoleApp(consoleAppRef.current);
         consoleAppRef.current.initialize();
     }, []);
 
@@ -156,7 +158,7 @@ const Console: React.FC = () => {
                                 '--cursor-visible': isFocused ? '1' : '0'
                             } as React.CSSProperties}
                         >
-                        {renderInput(input)}
+                            {renderInput(input)}
                             <textarea
                                 ref={inputRef}
                                 value={input}
@@ -166,14 +168,7 @@ const Console: React.FC = () => {
                                 }}
                                 onFocus={() => setIsFocused(true)}
                                 onBlur={() => setIsFocused(false)}
-                                onKeyPress={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                        e.preventDefault();
-                                        if (input.trim()) {
-                                            handleCommand(input.trim());
-                                        }
-                                    }
-                                }}
+                                onKeyDown={handleKeyDown}
                                 rows={1}
                                 spellCheck={false}
                                 style={{ opacity: 0, position: 'absolute', left: 0 }}
@@ -185,7 +180,6 @@ const Console: React.FC = () => {
             </form>
         </div>
     );
-
 };
 
 export default Console;

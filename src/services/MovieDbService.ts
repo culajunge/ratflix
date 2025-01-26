@@ -1,4 +1,5 @@
 import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
+import {ConsoleStore} from "../store/consoleStore";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -12,7 +13,7 @@ export class MovieDbService {
 
     public static readonly vidProviders = [
         {
-            name: "vidsrc",
+            name: "vidsrc (recommended)",
         },
         {
             name: "superembed",
@@ -67,11 +68,18 @@ export class MovieDbService {
         return await response.json();
     }
 
+    static getBackGroundColor(): string{
+        const consoleapp = ConsoleStore.getConsoleApp();
+        const settings = consoleapp?.loadSettings();
+        const color = settings!['--background-color'].replace('#', '');
+        return color;
+    }
+
 
     static async getEpisodeUrl(showId: number, seasonNumber: number, episodeNumber: number): Promise<string> {
         switch(this.currentVidProviderIndex){
             case 0:
-                return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
+                return this.getTvShowUrl1(showId.toString(), seasonNumber, episodeNumber, false);
 
             case 1:
                 return `${this.getVideoUrl2(showId.toString())}&season=${seasonNumber}&episode=${episodeNumber}`;
@@ -90,10 +98,10 @@ export class MovieDbService {
     static async getMovieUrl(movieId: string): Promise<string> {
         switch(this.currentVidProviderIndex) {
             case 0:
-                return `${MOVIE_BASE_URL_1}${movieId}`;
+                return this.getMovieUrl1(movieId, false);
 
             case 1:
-                return `${this.getVideoUrl2(movieId)}`;
+                return this.getVideoUrl2(movieId);
 
             case 2:
                 return this.getMovieUrl3(movieId);
@@ -105,6 +113,24 @@ export class MovieDbService {
                 return `${MOVIE_BASE_URL_1}${movieId}`;
         }
 
+    }
+
+    //vidsrc
+    static async getMovieUrl1(movieId: string, autoplay: boolean): Promise<string> {
+        let url = `${MOVIE_BASE_URL_1}${movieId}`;
+        if(autoplay) {
+            //Not working
+            url += '&autoplay=1';
+        }
+    }
+
+    static async getTvShowUrl1(showId: string, season: number, episode: number, autoplay: boolean): Promise<string> {
+        let url = `${TV_BASE_URL_1}${showId}&season=${season}&episode=${episode}`;
+        if(autoplay){
+            // Not working
+            url += '&autoplay=1';
+        }
+        return url;
     }
 
     //multiembed

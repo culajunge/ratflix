@@ -25,6 +25,8 @@ export class ConsoleApp {
     private currentSeasonIndex: number = -1;
     private currentEpisodeIndex: number = -1;
 
+    private currentURL: string = '';
+
     private currentWatchHistory: WatchProgress[] = [];
 
     API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -33,7 +35,7 @@ export class ConsoleApp {
     MOVIE_BASE_URL = `https://vidsrc.${this.domainSuffix}/embed/movie?tmdb=`;
     TV_BASE_URL = `https://vidsrc.${this.MOVIE_BASE_URL}/embed/tv?tmdb=`;
 
-    constructor(private handleOutput: (text: string) => void) {}
+    constructor(public handleOutput: (text: string) => void) {}
 
 
     public async handleCommand(input: string): Promise<void> {
@@ -136,6 +138,10 @@ export class ConsoleApp {
                     const [command2, ...args2] = input.trim().split(' ');
                     const argument2 = args2.join(' ');
                     await this.handleCustomization(argument2);
+                    break;
+
+                case 'url':
+                    this.handleOutput(this.currentURL);
                     break;
 
                 case 'echo':
@@ -560,8 +566,11 @@ export class ConsoleApp {
         }
     }
 
-    private async playNextEpisode(): Promise<void> {
+    public async playNextEpisode(): Promise<void> {
         if (this.currentMediaResult === null || this.currentSeason === null || this.currentEpisodeIndex === -1) {
+            if(this.currentMediaResult !== null && this.currentMediaResult.media_type === 'movie'){
+                return;
+            }
             this.handleOutput("I do not know which episode was your last.");
             return;
         }
@@ -584,12 +593,13 @@ export class ConsoleApp {
         console.log("Dispatching playVideo event with URL:", `${this.MOVIE_BASE_URL}${movieId}`); // Debug log
         this.handleOutput(`Playing: ${this.currentMediaResult!.title ?? this.currentMediaResult!.name}`);
         const url = await MovieDbService.getMovieUrl(movieId);
+        this.currentURL = url;
         window.dispatchEvent(new CustomEvent('playVideo', { detail: url }));
     }
 
     private async playEpisode(url: string): Promise<void> {
         this.handleOutput(`Playing: ${this.currentMediaResult?.name} S${this.currentSeason?.season_number} E${this.currentEpisodeIndex}`);
-
+        this.currentURL = url;
         // Save progress when playing an episode
         if (this.currentMediaResult?.media_type === 'tv') {
             this.saveWatchProgress(
@@ -898,7 +908,7 @@ Example: cust c1 ff0000`);
 
     }
 
-    private loadSettings(): { [key: string]: string } {
+    public loadSettings(): { [key: string]: string } {
         const rootStyles = getComputedStyle(document.documentElement);
         const defaultSettings = {
             '--path-color': rootStyles.getPropertyValue('--path-color').trim(),
@@ -966,5 +976,4 @@ Example: cust c1 ff0000`);
             this.handleOutput('Invalid JSON format. Please check your input.');
         }
     }
-
 }

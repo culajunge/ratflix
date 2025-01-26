@@ -17,10 +17,11 @@
     height: 100vh;
     background-color: var(--background-color);
     color: var(--output-color);
-    font-family: 'Courier New', Courier,
-    monospace; overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
     cursor: text;
-    text-align: left; padding: 20px;
+    text-align: left;
+    padding: 20px;
 }
 
 .console {
@@ -29,43 +30,26 @@
 }
 
 .console-line {
+    display: flex;
+    flex-wrap: wrap;
     white-space: pre-wrap;
     line-height: 1.2;
     margin-bottom: 0.2rem;
     text-align: left;
+    width: 100%;
 }
 
 .input-line {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
-}
-
-.prompt {
-    margin-right: 0.5rem;
-}
-
-textarea {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--args-color);
-    font-family: inherit;
-    font-size: inherit;
-    padding: 0;
-    margin: 0;
-    resize: none;
-    outline: none;
-    text-align: left;
-}
-
-.console-spacer {
-    height: 20vh;
-    min-height: 200px;
+    width: 100%;
 }
 
 .input-wrapper {
     position: relative;
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .input-wrapper::after {

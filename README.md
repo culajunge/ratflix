@@ -393,3 +393,385 @@ cust exp // Export current theme
   "--output-color": "#e0e0e0"
 }
 ```
+
+### SolarFlare
+```bash
+{
+  "--path-color": "#ffcb6b",
+  "--prompt-color": "#ffffff",
+  "--command-color": "#c3e88d",
+  "--args-color": "#89ddff",
+  "--prompt-symbol": ">",
+  "--title-color": "#ff5370",
+  "--title-text": "SolarFlare",
+  "--background-color": "#1e1e2e",
+  "--output-color": "#d0d0d0"
+}
+```
+
+## Even more Themes:
+
+Oceanic Breeze Theme
+
+{
+"--path-color": "#61afef",
+"--prompt-color": "#abb2bf",
+"--command-color": "#e5c07b",
+"--args-color": "#98c379",
+"--prompt-symbol": "➜",
+"--title-color": "#56b6c2",
+"--title-text": "Oceanic Breeze",
+"--background-color": "#282c34",
+"--output-color": "#dcdfe4"
+}
+
+Midnight Forest Theme
+
+{
+"--path-color": "#a3be8c",
+"--prompt-color": "#eceff4",
+"--command-color": "#81a1c1",
+"--args-color": "#ebcb8b",
+"--prompt-symbol": "▶",
+"--title-color": "#88c0d0",
+"--title-text": "Midnight Forest",
+"--background-color": "#2e3440",
+"--output-color": "#d8dee9"
+}
+
+Desert Sunset Theme
+
+{
+"--path-color": "#d08770",
+"--prompt-color": "#e5e9f0",
+"--command-color": "#bf616a",
+"--args-color": "#ebcb8b",
+"--prompt-symbol": "$",
+"--title-color": "#eb606b",
+"--title-text": "Desert Sunset",
+"--background-color": "#3b4252",
+"--output-color": "#eceff4"
+}
+
+Cyberpunk Glow Theme
+
+{
+"--path-color": "#ff79c6",
+"--prompt-color": "#8be9fd",
+"--command-color": "#bd93f9",
+"--args-color": "#f1fa8c",
+"--prompt-symbol": "⚡",
+"--title-color": "#ff5555",
+"--title-text": "Cyberpunk Glow",
+"--background-color": "#282a36",
+"--output-color": "#f8f8f2"
+}
+
+Vintage Terminal Theme
+
+{
+"--path-color": "#af875f",
+"--prompt-color": "#d7d7af",
+"--command-color": "#5fafd7",
+"--args-color": "#afaf87",
+"--prompt-symbol": "$",
+"--title-color": "#d75f5f",
+"--title-text": "Vintage Terminal",
+"--background-color": "#1c1c1c",
+"--output-color": "#d0d0d0"
+}
+
+Aurora Frost Theme
+
+{
+"--path-color": "#88c0d0",
+"--prompt-color": "#d8dee9",
+"--command-color": "#81a1c1",
+"--args-color": "#a3be8c",
+"--prompt-symbol": "❄",
+"--title-color": "#5e81ac",
+"--title-text": "Aurora Frost",
+"--background-color": "#2e3440",
+"--output-color": "#e5e9f0"
+}
+
+Stranger Things Theme
+
+{
+"--path-color": "#e50000",
+"--prompt-color": "#f8f8f2",
+"--command-color": "#d65d0e",
+"--args-color": "#ffb86c",
+"--prompt-symbol": "❖",
+"--title-color": "#ff0000",
+"--title-text": "Stranger Things",
+"--background-color": "#0a0a0a",
+"--output-color": "#c5c5c5"
+}
+
+The Matrix Theme
+
+{
+"--path-color": "#00ff41",
+"--prompt-color": "#c5c8c6",
+"--command-color": "#00cc33",
+"--args-color": "#99ff99",
+"--prompt-symbol": "▮",
+"--title-color": "#00ff41",
+"--title-text": "The Matrix",
+"--background-color": "#000000",
+"--output-color": "#c5c8c6"
+}
+
+Game of Thrones Theme
+
+{
+"--path-color": "#2b85c2",
+"--prompt-color": "#ffffff",
+"--command-color": "#dcbfa0",
+"--args-color": "#6a9f5b",
+"--prompt-symbol": "🐺",
+"--title-color": "#a9a9a9",
+"--title-text": "Game of Thrones",
+"--background-color": "#0c0d0e",
+"--output-color": "#e0e0e0"
+}
+
+Star Wars Theme
+
+{
+"--path-color": "#ffd700",
+"--prompt-color": "#ffffff",
+"--command-color": "#ffa500",
+"--args-color": "#87ceeb",
+"--prompt-symbol": "✦",
+"--title-color": "#ffcc00",
+"--title-text": "Star Wars",
+"--background-color": "#000000",
+"--output-color": "#eeeeee"
+}
+
+Breaking Bad Theme
+
+{
+"--path-color": "#4caf50",
+"--prompt-color": "#e8f5e9",
+"--command-color": "#388e3c",
+"--args-color": "#c8e6c9",
+"--prompt-symbol": "☣",
+"--title-color": "#81c784",
+"--title-text": "Breaking Bad",
+"--background-color": "#1b1b1b",
+"--output-color": "#dce775"
+}
+
+Harry Potter Theme
+
+{
+"--path-color": "#ffcc00",
+"--prompt-color": "#ffffff",
+"--command-color": "#b52a00",
+"--args-color": "#8f52cc",
+"--prompt-symbol": "⚡",
+"--title-color": "#6a4b4b",
+"--title-text": "Harry Potter",
+"--background-color": "#2d2d2d",
+"--output-color": "#cccccc"
+}
+
+Marvel Avengers Theme
+
+{
+"--path-color": "#d32f2f",
+"--prompt-color": "#ffffff",
+"--command-color": "#1976d2",
+"--args-color": "#fbc02d",
+"--prompt-symbol": "⍟",
+"--title-color": "#ff0000",
+"--title-text": "Marvel Avengers",
+"--background-color": "#212121",
+"--output-color": "#b0bec5"
+}
+
+Cyberpunk 2077 Theme
+
+{
+"--path-color": "#ffcd00",
+"--prompt-color": "#fdfdfd",
+"--command-color": "#ff5733",
+"--args-color": "#00ffff",
+"--prompt-symbol": "↯",
+"--title-color": "#ffcd00",
+"--title-text": "Cyberpunk 2077",
+"--background-color": "#1e1e1e",
+"--output-color": "#c7c7c7"
+}
+
+Lord of the Rings Theme
+
+{
+"--path-color": "#a3a300",
+"--prompt-color": "#d4d4aa",
+"--command-color": "#5c3317",
+"--args-color": "#c19a6b",
+"--prompt-symbol": "⚔",
+"--title-color": "#b8860b",
+"--title-text": "Lord of the Rings",
+"--background-color": "#282a36",
+"--output-color": "#d2b48c"
+}
+
+Doctor Who Theme
+
+{
+"--path-color": "#0047ab",
+"--prompt-color": "#ffffff",
+"--command-color": "#ffd700",
+"--args-color": "#6495ed",
+"--prompt-symbol": "✧",
+"--title-color": "#1e90ff",
+"--title-text": "Doctor Who",
+"--background-color": "#0a0a25",
+"--output-color": "#e6e6fa"
+}
+
+Here are more themes inspired by popular TV shows and movies:
+Sherlock Theme
+
+{
+"--path-color": "#2d2d2d",
+"--prompt-color": "#f1f1f1",
+"--command-color": "#9e9e9e",
+"--args-color": "#607d8b",
+"--prompt-symbol": "❓",
+"--title-color": "#455a64",
+"--title-text": "Sherlock",
+"--background-color": "#1c1c1c",
+"--output-color": "#e0e0e0"
+}
+
+Avatar: The Last Airbender Theme
+
+{
+"--path-color": "#ffa726",
+"--prompt-color": "#ffffff",
+"--command-color": "#29b6f6",
+"--args-color": "#66bb6a",
+"--prompt-symbol": "🌊",
+"--title-color": "#ef5350",
+"--title-text": "Avatar: The Last Airbender",
+"--background-color": "#37474f",
+"--output-color": "#eceff1"
+}
+
+The Witcher Theme
+
+{
+"--path-color": "#4caf50",
+"--prompt-color": "#c8e6c9",
+"--command-color": "#9e9e9e",
+"--args-color": "#ff9800",
+"--prompt-symbol": "⚔",
+"--title-color": "#607d8b",
+"--title-text": "The Witcher",
+"--background-color": "#1b1b1b",
+"--output-color": "#e0e0e0"
+}
+
+WandaVision Theme
+
+{
+"--path-color": "#bb86fc",
+"--prompt-color": "#ffffff",
+"--command-color": "#cf6679",
+"--args-color": "#03dac6",
+"--prompt-symbol": "◉",
+"--title-color": "#6200ea",
+"--title-text": "WandaVision",
+"--background-color": "#121212",
+"--output-color": "#e6e6e6"
+}
+
+Pirates of the Caribbean Theme
+
+{
+"--path-color": "#d7b377",
+"--prompt-color": "#e0e0e0",
+"--command-color": "#5c3317",
+"--args-color": "#c19a6b",
+"--prompt-symbol": "⚓",
+"--title-color": "#8b4513",
+"--title-text": "Pirates of the Caribbean",
+"--background-color": "#1c1c1c",
+"--output-color": "#d2b48c"
+}
+
+The Mandalorian Theme
+
+{
+"--path-color": "#a0a0a0",
+"--prompt-color": "#e5e5e5",
+"--command-color": "#7c7c7c",
+"--args-color": "#ffcc00",
+"--prompt-symbol": "⊙",
+"--title-color": "#616161",
+"--title-text": "The Mandalorian",
+"--background-color": "#101010",
+"--output-color": "#d4d4d4"
+}
+
+Dune Theme
+
+{
+"--path-color": "#c19a6b",
+"--prompt-color": "#f1d8a3",
+"--command-color": "#8b4513",
+"--args-color": "#e0a96d",
+"--prompt-symbol": "☀",
+"--title-color": "#d4a372",
+"--title-text": "Dune",
+"--background-color": "#3b2f2f",
+"--output-color": "#f5deb3"
+}
+
+Rick and Morty Theme
+
+{
+"--path-color": "#00ff00",
+"--prompt-color": "#ffffff",
+"--command-color": "#ff4500",
+"--args-color": "#87ceeb",
+"--prompt-symbol": "⚛",
+"--title-color": "#33cc33",
+"--title-text": "Rick and Morty",
+"--background-color": "#101010",
+"--output-color": "#c0c0c0"
+}
+
+Blade Runner 2049 Theme
+
+{
+"--path-color": "#ff6e40",
+"--prompt-color": "#ffffff",
+"--command-color": "#03a9f4",
+"--args-color": "#ffab40",
+"--prompt-symbol": "▣",
+"--title-color": "#ff9100",
+"--title-text": "Blade Runner 2049",
+"--background-color": "#2b2b2b",
+"--output-color": "#e0e0e0"
+}
+
+Stranger Things - Upside Down Theme
+
+{
+"--path-color": "#d32f2f",
+"--prompt-color": "#ffffff",
+"--command-color": "#e57373",
+"--args-color": "#b71c1c",
+"--prompt-symbol": "⬇",
+"--title-color": "#c62828",
+"--title-text": "Stranger Things - Upside Down",
+"--background-color": "#0a0a0a",
+"--output-color": "#c5c5c5"
+}
