@@ -10,7 +10,6 @@ export const VideoPlayer: React.FC = () => {
 
     const handleIframeLoad = () => {
         const consoleApp = ConsoleStore.getConsoleApp();
-        consoleApp!.handleOutput("Iframe loaded");
         setIframeReady(true);
     };
     const handlePlay = (e: CustomEvent) => {
