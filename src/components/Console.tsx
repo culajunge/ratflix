@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ConsoleApp } from '../services/ConsoleApp.tsx';
-import {ConsoleStore} from "../store/consoleStore";
+import {ConsoleStore} from "../store/consoleStore.ts";
 
 const Console: React.FC = () => {
     const [input, setInput] = useState('');

@@ -1,5 +1,5 @@
 import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
-import {ConsoleStore} from "../store/consoleStore";
+import {ConsoleStore} from "../store/consoleStore.ts";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -122,6 +122,7 @@ export class MovieDbService {
             //Not working
             url += '&autoplay=1';
         }
+        return url;
     }
 
     static async getTvShowUrl1(showId: string, season: number, episode: number, autoplay: boolean): Promise<string> {

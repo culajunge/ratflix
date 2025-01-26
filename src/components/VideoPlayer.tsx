@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import './VideoPlayer.css';
-import { ConsoleStore } from '../store/consoleStore';
+import { ConsoleStore } from '../store/consoleStore.ts';
 
 export const VideoPlayer: React.FC = () => {
     const [videoUrl, setVideoUrl] = useState<string | null>(null);

@@ -1,4 +1,4 @@
-import { ConsoleApp } from '../services/ConsoleApp';
+import { ConsoleApp } from '../services/ConsoleApp.tsx';
 
 export class ConsoleStore {
     private static instance: ConsoleApp | null = null;
