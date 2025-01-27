@@ -85,7 +85,7 @@ export const VideoPlayer: React.FC = () => {
                     ref={iframeRef}
                     key={videoUrl}
                     src={videoUrl}
-                    allow="fullscreen; autoplay; clipboard-write"
+                    allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; microphone; camera; display-capture; autoplay; cross-origin-isolated; midi; geolocation; gyroscope; magnetometer; payment; sync-xhr; usb; accelerometer; ambient-light-sensor; encrypted-media; publickey-credentials-get"
                     width="100%"
                     height="100%"
                     onLoad={handleIframeLoad}
