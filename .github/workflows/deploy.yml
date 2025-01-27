@@ -29,6 +29,8 @@ jobs:
         env:
           TSC_COMPILE_ON_ERROR: true
           VITE_TMDB_API_KEY: ${{ secrets.VITE_TMDB_API_KEY }}
+      - name: Create CNAME file
+        run: echo "ratflix.de" > dist/CNAME
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
