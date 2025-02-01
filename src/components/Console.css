@@ -72,4 +72,7 @@
     padding-right: 20px; /* Add some padding to prevent text from touching the scrollbar */
 }
 
-
+.console-spacer {
+    flex-shrink: 0; /* Prevents the spacer from shrinking */
+    pointer-events: none; /* Ensures the spacer doesn't interfere with clicks */
+}

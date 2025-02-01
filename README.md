@@ -139,7 +139,8 @@ cust exp // Export current theme
   "--title-color": "#e74856",
   "--title-text": "ratflix",
   "--background-color": "#1e1e1e",
-  "--output-color": "#fff"
+  "--output-color": "#fff",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -155,7 +156,8 @@ cust exp // Export current theme
   "--title-color": "#00ff00",
   "--title-text": "hackflix",
   "--background-color": "#000000",
-  "--output-color": "#11ff11"
+  "--output-color": "#11ff11",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -171,7 +173,8 @@ cust exp // Export current theme
   "--title-color": "#ff77e9",
   "--title-text": "neovi",
   "--background-color": "#282a36",
-  "--output-color": "#ffffff"
+  "--output-color": "#ffffff",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -187,7 +190,8 @@ cust exp // Export current theme
   "--title-color": "#f8b4d9",
   "--title-text": "pastelflix",
   "--background-color": "#fffafc",
-  "--output-color": "#c9c9ff"
+  "--output-color": "#c9c9ff",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -203,7 +207,8 @@ cust exp // Export current theme
   "--title-color": "#f5c16c",
   "--title-text": "Cookie Crumbles",
   "--background-color": "#2c1d12",
-  "--output-color": "#ffffff"
+  "--output-color": "#ffffff",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -219,7 +224,8 @@ cust exp // Export current theme
   "--title-color": "#495057",
   "--title-text": "The Gentleman’s Cinema",
   "--background-color": "#1b1e21",
-  "--output-color": "#f8f9fa"
+  "--output-color": "#f8f9fa",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -236,7 +242,8 @@ cust exp // Export current theme
   "--title-color": "#ff4081",
   "--title-text": "Midnight Glowing screen",
   "--background-color": "#1a1a2e",
-  "--output-color": "#ffffff"
+  "--output-color": "#ffffff",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -252,7 +259,8 @@ cust exp // Export current theme
   "--title-color": "#ffffff",
   "--title-text": "Flash Grenadas",
   "--background-color": "#000000",
-  "--output-color": "#ffffff"
+  "--output-color": "#ffffff",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -268,7 +276,8 @@ cust exp // Export current theme
   "--title-color": "#4ec9b0",
   "--title-text": "Forest Stream",
   "--background-color": "#1e2e1f",
-  "--output-color": "#d4d4d4"
+  "--output-color": "#d4d4d4",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -286,7 +295,8 @@ cust exp // Export current theme
   "--title-color": "#97c93c",
   "--title-text": "Breaking Streams",
   "--background-color": "#1a1a1a",
-  "--output-color": "#e0e0e0"
+  "--output-color": "#e0e0e0",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -304,7 +314,8 @@ cust exp // Export current theme
   "--title-color": "#50fa7b",
   "--title-text": "Cosmic Binge",
   "--background-color": "#0d0221",
-  "--output-color": "#f8f8f2"
+  "--output-color": "#f8f8f2",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -322,7 +333,8 @@ cust exp // Export current theme
   "--title-color": "#ff5555",
   "--title-text": "Shadow Streams",
   "--background-color": "#121212",
-  "--output-color": "#dcdcdc"
+  "--output-color": "#dcdcdc",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -340,7 +352,8 @@ cust exp // Export current theme
   "--title-color": "#f39c12",
   "--title-text": "Wild Streams",
   "--background-color": "#2c3e50",
-  "--output-color": "#ecf0f1"
+  "--output-color": "#ecf0f1",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -358,7 +371,8 @@ cust exp // Export current theme
   "--title-color": "#6897bb",
   "--title-text": "BretJains",
   "--background-color": "#2b2b2b",
-  "--output-color": "#f1d8de"
+  "--output-color": "#f1d8de",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -374,7 +388,8 @@ cust exp // Export current theme
   "--title-color": "#6a4e00",
   "--title-text": "Summoner's Stream",
   "--background-color": "#1c1c1c",
-  "--output-color": "#e0e0e0"
+  "--output-color": "#e0e0e0",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -390,7 +405,8 @@ cust exp // Export current theme
   "--title-color": "#ff9800",
   "--title-text": "Vibrant Contrast",
   "--background-color": "#212121",
-  "--output-color": "#e0e0e0"
+  "--output-color": "#e0e0e0",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -405,7 +421,8 @@ cust exp // Export current theme
   "--title-color": "#ff5370",
   "--title-text": "SolarFlare",
   "--background-color": "#1e1e2e",
-  "--output-color": "#d0d0d0"
+  "--output-color": "#d0d0d0",
+  "--console-font": "\"Monaco\", monospace"
 }
 ```
 
@@ -422,7 +439,8 @@ Oceanic Breeze Theme
 "--title-color": "#56b6c2",
 "--title-text": "Oceanic Breeze",
 "--background-color": "#282c34",
-"--output-color": "#dcdfe4"
+"--output-color": "#dcdfe4",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Midnight Forest Theme
@@ -436,7 +454,8 @@ Midnight Forest Theme
 "--title-color": "#88c0d0",
 "--title-text": "Midnight Forest",
 "--background-color": "#2e3440",
-"--output-color": "#d8dee9"
+"--output-color": "#d8dee9",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Desert Sunset Theme
@@ -450,7 +469,8 @@ Desert Sunset Theme
 "--title-color": "#eb606b",
 "--title-text": "Desert Sunset",
 "--background-color": "#3b4252",
-"--output-color": "#eceff4"
+"--output-color": "#eceff4",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Cyberpunk Glow Theme
@@ -464,7 +484,8 @@ Cyberpunk Glow Theme
 "--title-color": "#ff5555",
 "--title-text": "Cyberpunk Glow",
 "--background-color": "#282a36",
-"--output-color": "#f8f8f2"
+"--output-color": "#f8f8f2",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Vintage Terminal Theme
@@ -478,7 +499,8 @@ Vintage Terminal Theme
 "--title-color": "#d75f5f",
 "--title-text": "Vintage Terminal",
 "--background-color": "#1c1c1c",
-"--output-color": "#d0d0d0"
+"--output-color": "#d0d0d0",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Aurora Frost Theme
@@ -492,7 +514,8 @@ Aurora Frost Theme
 "--title-color": "#5e81ac",
 "--title-text": "Aurora Frost",
 "--background-color": "#2e3440",
-"--output-color": "#e5e9f0"
+"--output-color": "#e5e9f0",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Stranger Things Theme
@@ -506,7 +529,8 @@ Stranger Things Theme
 "--title-color": "#ff0000",
 "--title-text": "Stranger Things",
 "--background-color": "#0a0a0a",
-"--output-color": "#c5c5c5"
+"--output-color": "#c5c5c5",
+"--console-font": "\"Monaco\", monospace"
 }
 
 The Matrix Theme
@@ -520,7 +544,8 @@ The Matrix Theme
 "--title-color": "#00ff41",
 "--title-text": "The Matrix",
 "--background-color": "#000000",
-"--output-color": "#c5c8c6"
+"--output-color": "#c5c8c6",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Game of Thrones Theme
@@ -534,7 +559,8 @@ Game of Thrones Theme
 "--title-color": "#a9a9a9",
 "--title-text": "Game of Thrones",
 "--background-color": "#0c0d0e",
-"--output-color": "#e0e0e0"
+"--output-color": "#e0e0e0",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Star Wars Theme
@@ -548,7 +574,8 @@ Star Wars Theme
 "--title-color": "#ffcc00",
 "--title-text": "Star Wars",
 "--background-color": "#000000",
-"--output-color": "#eeeeee"
+"--output-color": "#eeeeee",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Breaking Bad Theme
@@ -562,7 +589,8 @@ Breaking Bad Theme
 "--title-color": "#81c784",
 "--title-text": "Breaking Bad",
 "--background-color": "#1b1b1b",
-"--output-color": "#dce775"
+"--output-color": "#dce775",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Harry Potter Theme
@@ -576,7 +604,8 @@ Harry Potter Theme
 "--title-color": "#6a4b4b",
 "--title-text": "Harry Potter",
 "--background-color": "#2d2d2d",
-"--output-color": "#cccccc"
+"--output-color": "#cccccc",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Marvel Avengers Theme
@@ -590,7 +619,8 @@ Marvel Avengers Theme
 "--title-color": "#ff0000",
 "--title-text": "Marvel Avengers",
 "--background-color": "#212121",
-"--output-color": "#b0bec5"
+"--output-color": "#b0bec5",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Cyberpunk 2077 Theme
@@ -604,7 +634,8 @@ Cyberpunk 2077 Theme
 "--title-color": "#ffcd00",
 "--title-text": "Cyberpunk 2077",
 "--background-color": "#1e1e1e",
-"--output-color": "#c7c7c7"
+"--output-color": "#c7c7c7",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Lord of the Rings Theme
@@ -618,7 +649,8 @@ Lord of the Rings Theme
 "--title-color": "#b8860b",
 "--title-text": "Lord of the Rings",
 "--background-color": "#282a36",
-"--output-color": "#d2b48c"
+"--output-color": "#d2b48c",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Doctor Who Theme
@@ -632,7 +664,8 @@ Doctor Who Theme
 "--title-color": "#1e90ff",
 "--title-text": "Doctor Who",
 "--background-color": "#0a0a25",
-"--output-color": "#e6e6fa"
+"--output-color": "#e6e6fa",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Here are more themes inspired by popular TV shows and movies:
@@ -647,7 +680,8 @@ Sherlock Theme
 "--title-color": "#455a64",
 "--title-text": "Sherlock",
 "--background-color": "#1c1c1c",
-"--output-color": "#e0e0e0"
+"--output-color": "#e0e0e0",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Avatar: The Last Airbender Theme
@@ -661,7 +695,8 @@ Avatar: The Last Airbender Theme
 "--title-color": "#ef5350",
 "--title-text": "Avatar: The Last Airbender",
 "--background-color": "#37474f",
-"--output-color": "#eceff1"
+"--output-color": "#eceff1",
+"--console-font": "\"Monaco\", monospace"
 }
 
 The Witcher Theme
@@ -675,7 +710,8 @@ The Witcher Theme
 "--title-color": "#607d8b",
 "--title-text": "The Witcher",
 "--background-color": "#1b1b1b",
-"--output-color": "#e0e0e0"
+"--output-color": "#e0e0e0",
+"--console-font": "\"Monaco\", monospace"
 }
 
 WandaVision Theme
@@ -689,7 +725,8 @@ WandaVision Theme
 "--title-color": "#6200ea",
 "--title-text": "WandaVision",
 "--background-color": "#121212",
-"--output-color": "#e6e6e6"
+"--output-color": "#e6e6e6",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Pirates of the Caribbean Theme
@@ -703,7 +740,8 @@ Pirates of the Caribbean Theme
 "--title-color": "#8b4513",
 "--title-text": "Pirates of the Caribbean",
 "--background-color": "#1c1c1c",
-"--output-color": "#d2b48c"
+"--output-color": "#d2b48c",
+"--console-font": "\"Monaco\", monospace"
 }
 
 The Mandalorian Theme
@@ -717,7 +755,8 @@ The Mandalorian Theme
 "--title-color": "#616161",
 "--title-text": "The Mandalorian",
 "--background-color": "#101010",
-"--output-color": "#d4d4d4"
+"--output-color": "#d4d4d4",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Dune Theme
@@ -731,7 +770,8 @@ Dune Theme
 "--title-color": "#d4a372",
 "--title-text": "Dune",
 "--background-color": "#3b2f2f",
-"--output-color": "#f5deb3"
+"--output-color": "#f5deb3",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Rick and Morty Theme
@@ -745,7 +785,8 @@ Rick and Morty Theme
 "--title-color": "#33cc33",
 "--title-text": "Rick and Morty",
 "--background-color": "#101010",
-"--output-color": "#c0c0c0"
+"--output-color": "#c0c0c0",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Blade Runner 2049 Theme
@@ -759,7 +800,8 @@ Blade Runner 2049 Theme
 "--title-color": "#ff9100",
 "--title-text": "Blade Runner 2049",
 "--background-color": "#2b2b2b",
-"--output-color": "#e0e0e0"
+"--output-color": "#e0e0e0",
+"--console-font": "\"Monaco\", monospace"
 }
 
 Stranger Things - Upside Down Theme
@@ -773,5 +815,6 @@ Stranger Things - Upside Down Theme
 "--title-color": "#c62828",
 "--title-text": "Stranger Things - Upside Down",
 "--background-color": "#0a0a0a",
-"--output-color": "#c5c5c5"
+"--output-color": "#c5c5c5",
+"--console-font": "\"Monaco\", monospace"
 }

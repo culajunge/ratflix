@@ -198,7 +198,7 @@ const Console: React.FC = () => {
                         }}>{getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
                         {renderInput(input)} {/* Removed the space character before renderInput */}
                     </div>
-                    <div className="console-spacer"></div>
+                    <div className="console-spacer" style={{ height: '20vh' }}></div>
                 </div>
             </form>
         </div>

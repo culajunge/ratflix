@@ -12,7 +12,7 @@ export class ConsoleApp {
     public async initialize(): Promise<void> {
         if (this.hasInitialized) return;
         this.hasInitialized = true;
-        this.applySettings();
+        await this.applySettings();
         this.printLogo();
     }
 
@@ -234,6 +234,7 @@ export class ConsoleApp {
         this.currentSearchResult!.results.forEach((result, index) => {
             this.handleOutput(`${index + 1}. ${result.title ?? result.name} (${result.media_type})`);
         });
+        this.handleOutput("...");
     }
 
     private displayHelp(): void {
@@ -794,7 +795,7 @@ export class ConsoleApp {
     }
 
 
-    private handleCustomization(args: string): void {
+    private async handleCustomization(args: string): Promise<void> {
 
         if (args === '') {
             this.handleOutput(` Available customization commands:
@@ -817,7 +818,7 @@ Example: cust c1 ff0000`);
             return;
         }
 
-        if(args.toLowerCase() === 'exp' || args.toLowerCase() === 'export'){
+        if (args.toLowerCase() === 'exp' || args.toLowerCase() === 'export') {
             this.exportSettings();
             return;
         }
@@ -826,22 +827,22 @@ Example: cust c1 ff0000`);
             const jsonStart = args.indexOf('{');
             if (jsonStart !== -1) {
                 const jsonString = args.slice(jsonStart);
-                this.importSettings(jsonString);
+                await this.importSettings(jsonString);
                 return;
             }
         }
 
 
-        if(args.toLowerCase() === 'imp' || args.toLowerCase() === 'import') {
+        if (args.toLowerCase() === 'imp' || args.toLowerCase() === 'import') {
             const jsonString = args;
-            this.importSettings(jsonString);
+            await this.importSettings(jsonString);
             return;
         }
 
         if (args.toLowerCase() === 'cr') {
             localStorage.removeItem('consoleSettings');
             this.handleOutput("Settings reset to default: Reload site to apply");
-            this.applySettings();
+            await this.applySettings();
             return;
         }
 
@@ -870,35 +871,41 @@ Example: cust c1 ff0000`);
             return;
         }
 
-        const [type, value] = args.split(' ');
-
         if (args.toLowerCase().startsWith('f') || args.toLowerCase().startsWith('font')) {
-            const fontArg = args.split(' ')[1];
+            // Extract the full font name by joining all arguments after 'f' or 'font'
+            const fontArg = args.split(' ').slice(1).join(' ');
 
             if (!fontArg) {
                 const fontList = this.availableFonts
                     .map((font, index) => `${index + 1}. ${font}`)
                     .join('\n');
-                this.handleOutput(`Available fonts:\n${fontList}\n\nCurrent font: ${this.loadSettings()['--console-font']}\nUsage: cust f <number>`);
+                this.handleOutput(`Available fonts:\n${fontList}\n\nCurrent font: ${this.loadSettings()['--console-font']}\nUsage: cust f <index or font name>`);
                 return;
             }
 
+            // Check if the argument is a number (index)
             const fontIndex = parseInt(fontArg) - 1;
-            if (isNaN(fontIndex) || fontIndex < 0 || fontIndex >= this.availableFonts.length) {
-                this.handleOutput(`Invalid font index. Please choose a number between 1 and ${this.availableFonts.length}`);
+            if (!isNaN(fontIndex) && fontIndex >= 0 && fontIndex < this.availableFonts.length) {
+                // Use the predefined font
+                const selectedFont = this.availableFonts[fontIndex];
+                this.applyFont(selectedFont);
+                this.handleOutput(`Font updated to: ${selectedFont}`);
                 return;
             }
 
-            const selectedFont = this.availableFonts[fontIndex];
-            document.documentElement.style.setProperty('--console-font', `"${selectedFont}", monospace`);
-
-            const settings = this.loadSettings();
-            settings['--console-font'] = `"${selectedFont}", monospace`;
-            localStorage.setItem('consoleSettings', JSON.stringify(settings));
-
-            this.handleOutput(`Font updated to: ${selectedFont}`);
-            return;
+            // If the argument is not a number, treat it as a font name
+            const fontName = this.capitalizeFontName(fontArg.trim()); // Capitalize the font name
+            try {
+                await this.loadGoogleFont(fontName);
+                this.applyFont(fontName);
+                this.handleOutput(`Font updated to: ${fontName}`);
+            } catch (error) {
+                this.handleOutput(`Failed to load font "${fontName}". Falling back to default font.`);
+                this.applyFont('Courier New'); // Fallback to a default font
+            }
         }
+
+        const [type, value] = args.split(' ');
 
         if (type.toLowerCase() === 'ps' || type.toLowerCase() === 'prompt') {
             const settings = this.loadSettings();
@@ -966,7 +973,34 @@ Example: cust c1 ff0000`);
         localStorage.setItem('consoleSettings', JSON.stringify(settings));
 
         this.handleOutput(`Updated ${cssVariable} to ${formattedColor}`);
+    }
 
+    private loadGoogleFont(fontName: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontName)}&display=swap`;
+
+            link.onload = () => resolve();
+            link.onerror = () => reject(new Error(`Failed to load font: ${fontName}`));
+
+            document.head.appendChild(link);
+        });
+    }
+
+    private applyFont(fontName: string): void {
+        document.documentElement.style.setProperty('--console-font', `"${fontName}", monospace`);
+
+        const settings = this.loadSettings();
+        settings['--console-font'] = `"${fontName}", monospace`;
+        localStorage.setItem('consoleSettings', JSON.stringify(settings));
+    }
+
+    private capitalizeFontName(fontName: string): string {
+        return fontName
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
     }
 
     public loadSettings(): { [key: string]: string } {
@@ -988,9 +1022,23 @@ Example: cust c1 ff0000`);
         return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
     }
 
-    private applySettings(): void {
+    private async applySettings(): Promise<void> {
         const settings = this.loadSettings();
-            Object.entries(settings).forEach(([variable, value]) => { document.documentElement.style.setProperty(variable, value);
+
+        // Check if the font is a custom font (not in the availableFonts list)
+        const fontName = settings['--console-font'].replace(/["']/g, '').split(',')[0].trim();
+        if (!this.availableFonts.includes(fontName)) {
+            try {
+                await this.loadGoogleFont(fontName);
+            } catch (error) {
+                this.handleOutput(`Failed to load font "${fontName}". Falling back to default font.`);
+                settings['--console-font'] = '"Courier New", monospace'; // Fallback to default font
+            }
+        }
+
+        // Apply all settings
+        Object.entries(settings).forEach(([variable, value]) => {
+            document.documentElement.style.setProperty(variable, value);
         });
     }
 
@@ -1004,7 +1052,7 @@ Example: cust c1 ff0000`);
         this.handleOutput('```');
     }
 
-    private importSettings(jsonString: string): void {
+    private async importSettings(jsonString: string): Promise<void> {
         try {
             // Remove any markdown code block markers if present
             const cleanJson = jsonString.replace(/```json|```/g, '').trim();
@@ -1030,9 +1078,19 @@ Example: cust c1 ff0000`);
                 return;
             }
 
+            const fontName = newSettings['--console-font'].replace(/["']/g, '').split(',')[0].trim();
+            if (!this.availableFonts.includes(fontName)) {
+                try {
+                    await this.loadGoogleFont(fontName);
+                } catch (error) {
+                    this.handleOutput(`Failed to load font "${fontName}". Falling back to default font.`);
+                    newSettings['--console-font'] = '"Courier New", monospace'; // Fallback to default font
+                }
+            }
+
             // Save to localStorage and apply
             localStorage.setItem('consoleSettings', JSON.stringify(newSettings));
-            this.applySettings();
+            await this.applySettings();
             this.handleOutput('Theme imported successfully! New settings applied.');
             this.printLogo(); // Refresh the logo with new colors
         } catch (error) {
