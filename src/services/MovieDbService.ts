@@ -19,7 +19,7 @@ export class MovieDbService {
             name: "superembed",
         },
         {
-            name: "nontogo"
+            name: "nontogo (high quality)"
         },
         {
             name: "autoembed"

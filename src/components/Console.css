@@ -1,14 +1,53 @@
 /* Cyberpunk Theme */
 :root {
-    --path-color: #868686;     /* Neon Mint */
-    --prompt-color: #ffffff;   /* Hot Pink */
-    --command-color: #e74856;  /* Electric Blue */
-    --args-color: #cbcbcb;     /* Soft Silver */
+    --path-color: #868686;
+    --prompt-color: #ffffff;
+    --command-color: #e74856;
+    --args-color: #cbcbcb;
     --prompt-symbol: "/>";
     --title-color: #e74856;
     --title-text: 'ratflix';
     --background-color: #1e1e1e;
     --output-color: #fff;
+
+    --selection-background: transparent;
+    --selection-color: inherit;
+}
+
+.console-container *::selection {
+    background: var(--selection-background);
+    color: var(--selection-color);
+}
+
+.console-container *::-moz-selection {
+    background: var(--selection-background);
+    color: var(--selection-color);
+}
+
+.console-container textarea::selection {
+    background: transparent;
+}
+
+.console-line {
+    display: flex;
+    flex-wrap: wrap;
+    white-space: pre-wrap;
+    line-height: 1.2;
+    margin-bottom: 0.2rem;
+    text-align: left;
+    width: 100%;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.input-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    width: 100%;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: nowrap;
 }
 
 .console-container {
@@ -22,53 +61,14 @@
     cursor: text;
     text-align: left;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .console {
     height: 100%;
     overflow-y: auto;
+    max-width: 100%;
+    padding-right: 20px; /* Add some padding to prevent text from touching the scrollbar */
 }
-
-.console-line {
-    display: flex;
-    flex-wrap: wrap;
-    white-space: pre-wrap;
-    line-height: 1.2;
-    margin-bottom: 0.2rem;
-    text-align: left;
-    width: 100%;
-}
-
-.input-line {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    width: 100%;
-}
-
-.input-wrapper {
-    position: relative;
-    flex: 1 1 auto;
-    min-width: 0;
-}
-
-.input-wrapper::after {
-    content: '';
-    position: absolute;
-    width: 8px;
-    height: 15px;
-    background-color: #fff;
-    animation: blink 1s step-end infinite;
-    margin-left: 1px;
-    transform: translateY(2px);
-    opacity: var(--cursor-visible, 1);
-    transition: opacity 0.1s;
-}
-
-@keyframes blink {
-    50% { opacity: 0; }
-}
-
-
 
 

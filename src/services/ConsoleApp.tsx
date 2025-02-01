@@ -2,6 +2,7 @@ import { MovieDbService } from './MovieDbService.ts';
 import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
 import {WatchProgress} from '../types/WatchHistory.ts';
 import {Simulate} from "react-dom/test-utils";
+import { HfInference } from "@huggingface/inference";
 import progress = Simulate.progress;
 
 export class ConsoleApp {
@@ -35,7 +36,14 @@ export class ConsoleApp {
     MOVIE_BASE_URL = `https://vidsrc.${this.domainSuffix}/embed/movie?tmdb=`;
     TV_BASE_URL = `https://vidsrc.${this.MOVIE_BASE_URL}/embed/tv?tmdb=`;
 
-    constructor(public handleOutput: (text: string) => void) {}
+    HF_API_KEY = import.meta.env.VITE_HUGGINGFACE_API_KEY;
+    HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
+
+    private hfClient: HfInference;
+
+    constructor(public handleOutput: (text: string) => void) {
+        this.hfClient = new HfInference(this.HF_API_KEY);
+    }
 
 
     public async handleCommand(input: string): Promise<void> {
@@ -144,6 +152,13 @@ export class ConsoleApp {
                     this.handleOutput(this.currentURL);
                     break;
 
+                case 'ai':
+                    if(argument){
+                        await this.handleAIQuery(argument);
+                    }else {
+                        this.handleOutput('Usage: ai &lt;query&gt;');
+                    }
+
                 case 'echo':
                     this.Echo(argument);
                     break;
@@ -154,6 +169,12 @@ export class ConsoleApp {
                 case 'credits':
                 case 'credit':
                     this.OpenGitHubRepo();
+                    break;
+
+                case 'hello':
+                    if(argument.toLowerCase() === 'there'){
+                        this.handleOutput('GENERAL KENOBI!');
+                    }
                     break;
 
                 default:
@@ -974,6 +995,44 @@ Example: cust c1 ff0000`);
             this.printLogo(); // Refresh the logo with new colors
         } catch (error) {
             this.handleOutput('Invalid JSON format. Please check your input.');
+        }
+    }
+
+    aiPrePromt = "You are a helpful AI assistant in a terminal-based movie streaming app called ratflix. " +
+        "You are called ratflixAI. Keep responses short, concise and relevant to movies and TV shows when possible. " +
+        "Format lists with bullet points. Include movie ratings when mentioning specific titles." +
+        "Keep in mind that your complete answer will be visible to the user";
+
+    private async handleAIQuery(query: string): Promise<void> {
+        try {
+            this.handleOutput("Thinking...");
+
+            // noinspection TypeScriptValidateTypes
+            const completion = await this.hfClient.textGeneration({
+                model: "microsoft/phi-2",
+                inputs: `System: ${this.aiPrePromt}\nUser: ${query}\nAssistant:`,
+                parameters: {
+                    max_new_tokens: 256,
+                    temperature: 0.7,
+                    top_p: 0.9,
+                    return_full_text: false
+                }
+            });
+
+            // Remove any echoed user input from the response
+            let response = completion.generated_text;
+            if (response.toLowerCase().includes(query.toLowerCase())) {
+                response = response.substring(query.length).trim();
+            }
+
+            this.handleOutput(response);
+
+        } catch (error) {
+            if (error.response?.status === 503) {
+                this.handleOutput("Model is currently loading. Please try again in a few moments.");
+            } else {
+                this.handleOutput(`Error: ${error.message}`);
+            }
         }
     }
 }

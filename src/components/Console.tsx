@@ -14,52 +14,66 @@ const Console: React.FC = () => {
         }
     }));
 
-    const formatCommandLine = (line: string) => {
-        if (line.startsWith('>')) {
-            // This is a command input line
-            const parts = line.split(' ');
-            const pathAndPrompt = parts[0].split('/');
-            const path = pathAndPrompt[0].substring(2); // Remove '> '
-            const command = parts[1];
-            const args = parts.slice(2).join(' ');
-
-            return (
-                <>
-                    <span style={{color: 'var(--path-color)'}}>{path}</span>
-                    <span style={{color: 'var(--prompt-color)'}}> {getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
-                    {' '}
-                    <span style={{color: 'var(--command-color)'}}>{command}</span>
-                    {args && <span style={{color: 'var(--args-color)'}}> {args}</span>}
-                </>
-            );
-        }
-        return line;
-    };
     const renderInput = (input: string) => {
         const parts = input.split(' ');
         const command = parts[0];
         const args = parts.slice(1).join(' ');
 
         return (
-            <>
+            <span style={{
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                margin: 0,
+                padding: 0,
+                minWidth: '8px' // This ensures there's always space for the cursor
+            }}>
+            <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                onKeyDown={handleKeyDown}
+                rows={1}
+                spellCheck={false}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    color: 'transparent',
+                    caretColor: '#fff',
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    resize: 'none',
+                    padding: 0,
+                    margin: 0,
+                    font: 'inherit',
+                    lineHeight: 'inherit',
+                    whiteSpace: 'pre', // This preserves spaces
+                    WebkitTextFillColor: 'transparent',  // Add this
+                    WebkitUserModify: 'read-write-plaintext-only',  // Add this
+                    userSelect: 'none'  // Add this
+                }}
+            />
+            <span style={{
+                display: 'inline',
+                pointerEvents: 'none',
+                margin: 0,
+                padding: 0,
+                whiteSpace: 'pre' // This preserves spaces
+            }}>
                 <span style={{color: 'var(--command-color)'}}>{command}</span>
-                {args && <span style={{color: 'var(--args-color)'}}> {args}</span>}
-            </>
+                {args && <span style={{color: 'var(--args-color)'}}>{args ? ` ${args}` : ''}</span>}
+            </span>
+        </span>
         );
     };
-    const [cursorPosition, setCursorPosition] = useState(0);
     const [isFocused, setIsFocused] = useState(true);
-    const measureText = (text: string) => {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        if (context) {
-            context.font = getComputedStyle(document.body).font;
-            return context.measureText(text.substring(0, cursorPosition)).width;
-        }
-        return 0;
-    };
 
-    // At the top of your component, update the state type
     const [history, setHistory] = useState<(string | JSX.Element)[]>([]);
 
     const handleCommand = async (command: string) => {
@@ -149,31 +163,15 @@ const Console: React.FC = () => {
                         </div>
                     ))}
                     <div className="input-line">
-                        <span style={{color: 'var(--path-color)'}}>{consoleAppRef.current.getCurrentPath()}</span>
-                        <span style={{color: 'var(--prompt-color)'}}> {getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
-                        {' '}
-                        <div
-                            className="input-wrapper"
-                            style={{
-                                '--cursor-visible': isFocused ? '1' : '0'
-                            } as React.CSSProperties}
-                        >
-                            {renderInput(input)}
-                            <textarea
-                                ref={inputRef}
-                                value={input}
-                                onChange={(e) => {
-                                    setInput(e.target.value);
-                                    setCursorPosition(e.target.selectionStart || 0);
-                                }}
-                                onFocus={() => setIsFocused(true)}
-                                onBlur={() => setIsFocused(false)}
-                                onKeyDown={handleKeyDown}
-                                rows={1}
-                                spellCheck={false}
-                                style={{ opacity: 0, position: 'absolute', left: 0 }}
-                            />
-                        </div>
+                        <span style={{
+                            color: 'var(--path-color)',
+                            flexShrink: 0
+                        }}>{consoleAppRef.current.getCurrentPath()}</span>
+                        <span style={{
+                            color: 'var(--prompt-color)',
+                            flexShrink: 0
+                        }}>{getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
+                        {renderInput(input)} {/* Removed the space character before renderInput */}
                     </div>
                     <div className="console-spacer"></div>
                 </div>
