@@ -9,6 +9,7 @@
     --title-text: 'ratflix';
     --background-color: #1e1e1e;
     --output-color: #fff;
+    --console-font: 'Courier New';
 
     --selection-background: transparent;
     --selection-color: inherit;
@@ -56,7 +57,7 @@
     height: 100vh;
     background-color: var(--background-color);
     color: var(--output-color);
-    font-family: 'Courier New', Courier, monospace;
+    font-family: var(--console-font), 'Courier New', monospace !important;
     overflow: hidden;
     cursor: text;
     text-align: left;

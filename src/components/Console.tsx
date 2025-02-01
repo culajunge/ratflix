@@ -14,6 +14,7 @@ const Console: React.FC = () => {
         }
     }));
 
+
     const renderInput = (input: string) => {
         const parts = input.split(' ');
         const command = parts[0];
@@ -26,7 +27,7 @@ const Console: React.FC = () => {
                 alignItems: 'center',
                 margin: 0,
                 padding: 0,
-                minWidth: '8px' // This ensures there's always space for the cursor
+                minWidth: '8px'
             }}>
             <textarea
                 ref={inputRef}
@@ -35,6 +36,12 @@ const Console: React.FC = () => {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 onKeyDown={handleKeyDown}
+                onKeyPress={(e) => {
+                    // Prevent newline on Enter in Firefox
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                    }
+                }}
                 rows={1}
                 spellCheck={false}
                 style={{
@@ -53,10 +60,11 @@ const Console: React.FC = () => {
                     margin: 0,
                     font: 'inherit',
                     lineHeight: 'inherit',
-                    whiteSpace: 'pre', // This preserves spaces
-                    WebkitTextFillColor: 'transparent',  // Add this
-                    WebkitUserModify: 'read-write-plaintext-only',  // Add this
-                    userSelect: 'none'  // Add this
+                    whiteSpace: 'pre',
+                    WebkitTextFillColor: 'transparent',
+                    WebkitUserModify: 'read-write-plaintext-only',
+                    userSelect: 'none',
+                    overflow: 'hidden'
                 }}
             />
             <span style={{
@@ -64,7 +72,7 @@ const Console: React.FC = () => {
                 pointerEvents: 'none',
                 margin: 0,
                 padding: 0,
-                whiteSpace: 'pre' // This preserves spaces
+                whiteSpace: 'pre'
             }}>
                 <span style={{color: 'var(--command-color)'}}>{command}</span>
                 {args && <span style={{color: 'var(--args-color)'}}>{args ? ` ${args}` : ''}</span>}
@@ -92,15 +100,21 @@ const Console: React.FC = () => {
         await consoleAppRef.current.handleCommand(command);
         setInput('');
     };
-
-
     const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        console.log('Key pressed:', e.key);
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            if (input.trim()) {
+        // Explicitly handle Enter key for Firefox
+        if (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter') {
+            e.preventDefault(); // Prevent default behavior (newline)
+            e.stopPropagation(); // Stop event bubbling
+
+            if (!e.shiftKey && input.trim()) {
                 await handleCommand(input.trim());
             }
+        }
+    };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (input.trim()) {
+            await handleCommand(input.trim());
         }
     };
 
@@ -152,8 +166,12 @@ const Console: React.FC = () => {
 
     return (
         <div className="console-container" onClick={handleConsoleClick}>
-            <form onSubmit={(e) => e.preventDefault()} className="console-container" onClick={handleConsoleClick}>
-                <div className="console" ref={consoleRef}>
+            <form
+                onSubmit={handleSubmit}
+                className="console-container"
+                onClick={handleConsoleClick}
+            >
+            <div className="console" ref={consoleRef}>
                     {history.map((line, i) => (
                         <div key={i} className="console-line">
                             {typeof line === 'string'

@@ -39,6 +39,19 @@ export class ConsoleApp {
     HF_API_KEY = import.meta.env.VITE_HUGGINGFACE_API_KEY;
     HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
 
+    private availableFonts = [
+        'Courier New',
+        'Monaco',
+        'Fira Code',
+        'Source Code Pro',
+        'JetBrains Mono',
+        'Hack',
+        'Ubuntu Mono',
+        'Consolas',
+        'Menlo',
+        'Roboto Mono'
+    ];
+
     private hfClient: HfInference;
 
     constructor(public handleOutput: (text: string) => void) {
@@ -832,8 +845,6 @@ Example: cust c1 ff0000`);
             return;
         }
 
-
-
         if (args.toLowerCase() === 'r' || args.toLowerCase() === 'reset') {
             localStorage.removeItem('consoleSettings');
 
@@ -846,7 +857,8 @@ Example: cust c1 ff0000`);
                 '--title-color': '#e74856',
                 '--title-text': 'ratflix',
                 '--background-color': '#1e1e1e',
-                '--output-color': '#fff'
+                '--output-color': '#fff',
+                '--console-font': 'Courier New',
             };
 
             Object.entries(defaultSettings).forEach(([variable, value]) => {
@@ -859,6 +871,34 @@ Example: cust c1 ff0000`);
         }
 
         const [type, value] = args.split(' ');
+
+        if (args.toLowerCase().startsWith('f') || args.toLowerCase().startsWith('font')) {
+            const fontArg = args.split(' ')[1];
+
+            if (!fontArg) {
+                const fontList = this.availableFonts
+                    .map((font, index) => `${index + 1}. ${font}`)
+                    .join('\n');
+                this.handleOutput(`Available fonts:\n${fontList}\n\nCurrent font: ${this.loadSettings()['--console-font']}\nUsage: cust f <number>`);
+                return;
+            }
+
+            const fontIndex = parseInt(fontArg) - 1;
+            if (isNaN(fontIndex) || fontIndex < 0 || fontIndex >= this.availableFonts.length) {
+                this.handleOutput(`Invalid font index. Please choose a number between 1 and ${this.availableFonts.length}`);
+                return;
+            }
+
+            const selectedFont = this.availableFonts[fontIndex];
+            document.documentElement.style.setProperty('--console-font', `"${selectedFont}", monospace`);
+
+            const settings = this.loadSettings();
+            settings['--console-font'] = `"${selectedFont}", monospace`;
+            localStorage.setItem('consoleSettings', JSON.stringify(settings));
+
+            this.handleOutput(`Font updated to: ${selectedFont}`);
+            return;
+        }
 
         if (type.toLowerCase() === 'ps' || type.toLowerCase() === 'prompt') {
             const settings = this.loadSettings();
@@ -941,6 +981,7 @@ Example: cust c1 ff0000`);
             '--title-text': rootStyles.getPropertyValue('--title-text').trim(),
             '--background-color': rootStyles.getPropertyValue('--background-color').trim(),
             '--output-color': rootStyles.getPropertyValue('--output-color').trim(),
+            '--console-font': rootStyles.getPropertyValue('--console-font').trim() || 'Courier New',
         };
 
         const savedSettings = localStorage.getItem('consoleSettings');
@@ -979,7 +1020,8 @@ Example: cust c1 ff0000`);
                 '--background-color',
                 '--output-color',
                 '--prompt-symbol',
-                '--title-text'
+                '--title-text',
+                '--console-font'
             ];
 
             const hasAllKeys = requiredKeys.every(key => key in newSettings);
