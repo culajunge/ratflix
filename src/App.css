@@ -48,7 +48,6 @@
   position: absolute;
   left: 0;
   top: 0;
-  gap: 0;
 }
 
 .video-container {
@@ -61,4 +60,15 @@
   transition: all 0.3s ease;
 }
 
+.resizer {
+  width: 8px;
+  background-color: #ccc;
+  cursor: ew-resize;
+  transition: background-color 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
 
+.resizer:hover {
+  background-color: #888;
+}

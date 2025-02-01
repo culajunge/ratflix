@@ -68,7 +68,7 @@ const Console: React.FC = () => {
                     margin: 0,
                     font: 'inherit',
                     lineHeight: 'inherit',
-                    whiteSpace: 'pre',
+                    whiteSpace: 'pre-wrap',
                     WebkitTextFillColor: 'transparent',
                     WebkitUserModify: 'read-write-plaintext-only',
                     userSelect: 'none',
@@ -197,11 +197,15 @@ const Console: React.FC = () => {
                     <div className="input-line">
                         <span style={{
                             color: 'var(--path-color)',
-                            flexShrink: 0
+                            flexShrink: 0,
+                            whiteSpace: 'pre-wrap',
+                            wordWrap: 'normal'
                         }}>{consoleAppRef.current.getCurrentPath()}</span>
                         <span style={{
                             color: 'var(--prompt-color)',
-                            flexShrink: 0
+                            flexShrink: 0,
+                            whiteSpace: 'pre-wrap',
+                            wordWrap: 'normal'
                         }}>{getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
                         {renderInput(input)} {/* Removed the space character before renderInput */}
                     </div>

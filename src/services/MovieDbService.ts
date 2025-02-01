@@ -23,6 +23,33 @@ export class MovieDbService {
         },
         {
             name: "autoembed"
+        },
+        {
+            name: "vidsrc.me"
+        },
+        {
+            name: "fsapi.xyz (unreliable)"
+        },
+        {
+            name: "curtstream (unreliable)"
+        },
+        {
+            name: "moviewp (unreliable)"
+        },
+        {
+            name: "apimdb (is no more)"
+        },
+        {
+            name: "gomo.to"
+        },
+        {
+            name: "vidcloud"
+        },
+        {
+            name: "getsuperembed"
+        },
+        {
+            name: "databasegdriveplayer"
         }
     ];
 
@@ -71,42 +98,74 @@ export class MovieDbService {
 
 
     static async getEpisodeUrl(showId: number, seasonNumber: number, episodeNumber: number): Promise<string> {
-        switch(this.currentVidProviderIndex){
+        console.log("currentVidProviderIndex: ", this.currentVidProviderIndex);
+        switch (this.currentVidProviderIndex) {
             case 0:
                 return this.getTvShowUrl1(showId.toString(), seasonNumber, episodeNumber, false);
-
             case 1:
                 return `${this.getVideoUrl2(showId.toString())}&season=${seasonNumber}&episode=${episodeNumber}`;
-
             case 2:
                 return await this.getTvShowUrl3(showId.toString(), seasonNumber, episodeNumber);
-
             case 3:
                 return this.getTvShowUrl4(showId.toString(), seasonNumber, episodeNumber);
-
+            case 4:
+                // vidsrc.me (movies only) - does not support TV shows
+                return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
+            case 5:
+                return this.getTvShowUrlFsapi(showId.toString(), seasonNumber, episodeNumber);
+            case 6:
+                return this.getTvShowUrlCurtstream(showId.toString(), seasonNumber, episodeNumber);
+            case 7:
+                return this.getTvShowUrlMoviewp(showId.toString(), seasonNumber, episodeNumber);
+            case 8:
+                return this.getTvShowUrlApimdb(showId.toString(), seasonNumber, episodeNumber);
+            case 9:
+                // gomo.to (movies only) - does not support TV shows
+                return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
+            case 10:
+                // vidcloud (movies only) - does not support TV shows
+                return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
+            case 11:
+                return this.getTvShowUrlGetsuperembed(showId.toString(), seasonNumber, episodeNumber);
+            case 12:
+                return this.getTvShowUrlDatabasegdriveplayer(showId.toString(), seasonNumber, episodeNumber);
             default:
                 return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
         }
     }
 
     static async getMovieUrl(movieId: string): Promise<string> {
-        switch(this.currentVidProviderIndex) {
+        console.log("currentVidProviderIndex: ", this.currentVidProviderIndex);
+        switch (this.currentVidProviderIndex) {
             case 0:
                 return this.getMovieUrl1(movieId, false);
-
             case 1:
                 return this.getVideoUrl2(movieId);
-
             case 2:
                 return this.getMovieUrl3(movieId);
-
             case 3:
                 return this.getMovieUrl4(movieId);
-
+            case 4:
+                return this.getMovieUrlVidsrcMe(movieId);
+            case 5:
+                return this.getMovieUrlFsapi(movieId);
+            case 6:
+                return this.getMovieUrlCurtstream(movieId);
+            case 7:
+                return this.getMovieUrlMoviewp(movieId);
+            case 8:
+                return this.getMovieUrlApimdb(movieId);
+            case 9:
+                return this.getMovieUrlGomo(movieId);
+            case 10:
+                return this.getMovieUrlVidcloud(movieId);
+            case 11:
+                return this.getMovieUrlGetsuperembed(movieId);
+            case 12:
+                return 'https://hackertyper.net/';
             default:
                 return `${MOVIE_BASE_URL_1}${movieId}`;
         }
-
     }
 
     //vidsrc
@@ -161,5 +220,93 @@ export class MovieDbService {
         return TV_BASE_URL_4;
     }
 
+    // vidsrc.me (movies only)
+    static async getMovieUrlVidsrcMe(movieId: string): Promise<string> {
+        const imdbid = await this.getImdbId(movieId, 'movie');
+        const MOVIE_BASE_URL_5 = `https://vidsrc.me/embed/${imdbid}/`;
+        return MOVIE_BASE_URL_5;
+    }
+
+    // fsapi.xyz
+    static async getMovieUrlFsapi(movieId: string): Promise<string> {
+        const imdbid = await this.getImdbId(movieId, 'movie');
+        const MOVIE_BASE_URL_6 = `https://fsapi.xyz/movie/${imdbid}`;
+        return MOVIE_BASE_URL_6;
+    }
+
+    static async getTvShowUrlFsapi(showId: string, season: number, episode: number): Promise<string> {
+        const imdbid = await this.getImdbId(showId, 'tv');
+        const TV_BASE_URL_6 = `https://fsapi.xyz/tv-imdb/${imdbid}-${season}-${episode}`;
+        return TV_BASE_URL_6;
+    }
+
+    // curtstream
+    static async getMovieUrlCurtstream(movieId: string): Promise<string> {
+        const imdbid = await this.getImdbId(movieId, 'movie');
+        const MOVIE_BASE_URL_7 = `https://curtstream.com/movies/imdb/${imdbid}`;
+        return MOVIE_BASE_URL_7;
+    }
+
+    static async getTvShowUrlCurtstream(showId: string, season: number, episode: number): Promise<string> {
+        const TV_BASE_URL_7 = `https://curtstream.com/series/tmdb/${showId}/${season}/${episode}/`;
+        return TV_BASE_URL_7;
+    }
+
+    // moviewp
+    static async getMovieUrlMoviewp(movieId: string): Promise<string> {
+        const imdbid = await this.getImdbId(movieId, 'movie');
+        const MOVIE_BASE_URL_8 = `https://moviewp.com/se.php?video_id=${imdbid}`;
+        return MOVIE_BASE_URL_8;
+    }
+
+    static async getTvShowUrlMoviewp(showId: string, season: number, episode: number): Promise<string> {
+        const TV_BASE_URL_8 = `https://moviewp.com/se.php?video_id=${showId}&tmdb=1&s=${season}&e=${episode}`;
+        return TV_BASE_URL_8;
+    }
+
+    // apimdb
+    static async getMovieUrlApimdb(movieId: string): Promise<string> {
+        const imdbid = await this.getImdbId(movieId, 'movie');
+        const MOVIE_BASE_URL_9 = `https://v2.apimdb.net/e/movie/${imdbid}`;
+        return MOVIE_BASE_URL_9;
+    }
+
+    static async getTvShowUrlApimdb(showId: string, season: number, episode: number): Promise<string> {
+        const TV_BASE_URL_9 = `https://v2.apimdb.net/e/tmdb/tv/${showId}/${season}/${episode}/`;
+        return TV_BASE_URL_9;
+    }
+
+    // gomo.to (movies only)
+    static async getMovieUrlGomo(movieId: string): Promise<string> {
+        const imdbid = await this.getImdbId(movieId, 'movie');
+        const MOVIE_BASE_URL_10 = `https://gomo.to/movie/${imdbid}`;
+        return MOVIE_BASE_URL_10;
+    }
+
+    // vidcloud (movies only)
+    static async getMovieUrlVidcloud(movieId: string): Promise<string> {
+        const imdbid = await this.getImdbId(movieId, 'movie');
+        const MOVIE_BASE_URL_11 = `https://vidcloud.stream/${imdbid}.html`;
+        return MOVIE_BASE_URL_11;
+    }
+
+    // getsuperembed
+    static async getMovieUrlGetsuperembed(movieId: string): Promise<string> {
+        const imdbid = await this.getImdbId(movieId, 'movie');
+        const MOVIE_BASE_URL_12 = `https://getsuperembed.link/?video_id=${imdbid}`;
+        return MOVIE_BASE_URL_12;
+    }
+
+    static async getTvShowUrlGetsuperembed(showId: string, season: number, episode: number): Promise<string> {
+        const imdbid = await this.getImdbId(showId, 'tv');
+        const TV_BASE_URL_12 = `https://getsuperembed.link/?video_id=${imdbid}&season=${season}&episode=${episode}`;
+        return TV_BASE_URL_12;
+    }
+
+    // databasegdriveplayer
+    static async getTvShowUrlDatabasegdriveplayer(showId: string, season: number, episode: number): Promise<string> {
+        const TV_BASE_URL_13 = `https://databasegdriveplayer.co/player.php?type=series&tmdb=${showId}&season=${season}&episode=${episode}`;
+        return TV_BASE_URL_13;
+    }
 
 }

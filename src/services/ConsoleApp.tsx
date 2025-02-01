@@ -783,7 +783,7 @@ export class ConsoleApp {
             return;
         }
 
-        const newIndex = parseInt(arg[0]) - 1;
+        const newIndex = parseInt(arg.trim()) - 1;
         if (isNaN(newIndex) || newIndex < 0 || newIndex >= MovieDbService.vidProviders.length) {
             this.handleOutput(`Invalid provider index. Please choose between 0 and ${MovieDbService.vidProviders.length - 1}`);
             return;
