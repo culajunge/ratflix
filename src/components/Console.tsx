@@ -19,6 +19,7 @@ const Console: React.FC = () => {
         const command = parts[0];
         const args = parts.slice(1).join(' ');
 
+        // noinspection XmlDeprecatedElement
         return (
             <span style={{
                 position: 'relative',
@@ -36,7 +37,7 @@ const Console: React.FC = () => {
                 onBlur={() => setIsFocused(false)}
                 onKeyDown={handleKeyDown}
                 onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter') {
                         e.preventDefault();
                         handleCommand(input.trim());
                     }
@@ -72,10 +73,10 @@ const Console: React.FC = () => {
                 pointerEvents: 'none',
                 margin: 0,
                 padding: 0,
-                whiteSpace: 'pre' // This preserves spaces
+                whiteSpace: 'pre' // Preserves spaces
             }}>
-                <span style={{color: 'var(--command-color)'}}>{command}</span>
-                {args && <span style={{color: 'var(--args-color)'}}>{args ? ` ${args}` : ''}</span>}
+                <span style={{ color: 'var(--command-color)' }}>{command}</span>
+                {args && <span style={{ color: 'var(--args-color)' }}>{args ? ` ${args}` : ''}</span>}
             </span>
         </span>
         );
@@ -88,12 +89,14 @@ const Console: React.FC = () => {
         const currentPathSnapshot = consoleAppRef.current.getCurrentPath();
         const formattedCommand = (
             <>
-                <span style={{color: 'var(--path-color)'}}>{currentPathSnapshot}</span>
-                <span style={{color: 'var(--prompt-color)'}}> {getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
-                {' '}
-                <span style={{color: 'var(--command-color)'}}>{command.split(' ')[0]}</span>
-                {command.split(' ').slice(1).join(' ') &&
-                    <span style={{color: 'var(--args-color)'}}> {command.split(' ').slice(1).join(' ')}</span>}
+                <span style={{ color: 'var(--path-color)' }}>{currentPathSnapshot}</span>
+                <span style={{ color: 'var(--prompt-color)' }}>
+                {getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}
+            </span>
+                <span style={{ color: 'var(--command-color)' }}>{command.split(' ')[0]}</span>
+                {command.split(' ').slice(1).join(' ') && (
+                    <span style={{ color: 'var(--args-color)' }}> {command.split(' ').slice(1).join(' ')}</span>
+                )}
             </>
         );
         setHistory(prev => [...prev, formattedCommand]);
