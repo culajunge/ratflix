@@ -14,7 +14,6 @@ const Console: React.FC = () => {
         }
     }));
 
-
     const renderInput = (input: string) => {
         const parts = input.split(' ');
         const command = parts[0];
@@ -27,7 +26,7 @@ const Console: React.FC = () => {
                 alignItems: 'center',
                 margin: 0,
                 padding: 0,
-                minWidth: '8px'
+                minWidth: '8px' // This ensures there's always space for the cursor
             }}>
             <textarea
                 ref={inputRef}
@@ -37,12 +36,13 @@ const Console: React.FC = () => {
                 onBlur={() => setIsFocused(false)}
                 onKeyDown={handleKeyDown}
                 onKeyPress={(e) => {
-                    // Prevent newline on Enter in Firefox
                     if (e.key === 'Enter') {
                         e.preventDefault();
+                        handleCommand(input.trim());
                     }
                 }}
                 rows={1}
+                wrap="off"
                 spellCheck={false}
                 style={{
                     position: 'absolute',
@@ -72,7 +72,7 @@ const Console: React.FC = () => {
                 pointerEvents: 'none',
                 margin: 0,
                 padding: 0,
-                whiteSpace: 'pre'
+                whiteSpace: 'pre' // This preserves spaces
             }}>
                 <span style={{color: 'var(--command-color)'}}>{command}</span>
                 {args && <span style={{color: 'var(--args-color)'}}>{args ? ` ${args}` : ''}</span>}
@@ -101,17 +101,21 @@ const Console: React.FC = () => {
         setInput('');
     };
     const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        // Explicitly handle Enter key for Firefox
+        console.log(e.key);
         if (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter') {
-            e.preventDefault(); // Prevent default behavior (newline)
-            e.stopPropagation(); // Stop event bubbling
+            // Prevent the default action first
+            e.preventDefault();
+            e.stopPropagation();
 
+            // Only execute if not pressing shift and there's content
             if (!e.shiftKey && input.trim()) {
                 await handleCommand(input.trim());
+                return false;
             }
         }
     };
     const handleSubmit = async (e: React.FormEvent) => {
+        console.log('handleSubmit called');
         e.preventDefault();
         if (input.trim()) {
             await handleCommand(input.trim());
