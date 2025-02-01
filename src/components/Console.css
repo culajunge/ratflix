@@ -15,20 +15,6 @@
     --selection-color: inherit;
 }
 
-.console-container *::selection {
-    background: var(--selection-background);
-    color: var(--selection-color);
-}
-
-.console-container *::-moz-selection {
-    background: var(--selection-background);
-    color: var(--selection-color);
-}
-
-.console-container textarea::selection {
-    background: transparent;
-}
-
 .console-line {
     display: flex;
     flex-wrap: wrap;

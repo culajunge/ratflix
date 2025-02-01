@@ -42,6 +42,13 @@ const Console: React.FC = () => {
                         handleCommand(input.trim());
                     }
                 }}
+                onMouseUp={(e) => {
+                    // Prevent the textarea from losing focus
+                    e.preventDefault();
+                    if (inputRef.current) {
+                        inputRef.current!.focus();
+                    }
+                }}
                 rows={1}
                 wrap="off"
                 spellCheck={false}

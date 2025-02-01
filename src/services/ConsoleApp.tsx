@@ -2,7 +2,6 @@ import { MovieDbService } from './MovieDbService.ts';
 import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
 import {WatchProgress} from '../types/WatchHistory.ts';
 import {Simulate} from "react-dom/test-utils";
-import { HfInference } from "@huggingface/inference";
 import progress = Simulate.progress;
 
 export class ConsoleApp {
@@ -41,21 +40,21 @@ export class ConsoleApp {
 
     private availableFonts = [
         'Courier New',
-        'Monaco',
-        'Fira Code',
-        'Source Code Pro',
-        'JetBrains Mono',
-        'Hack',
-        'Ubuntu Mono',
+        'Courier',
         'Consolas',
+        'Monaco',
         'Menlo',
-        'Roboto Mono'
+        'Lucida Console',
+        'Andale Mono',
+        'Roboto Mono',
+        'Ubuntu Mono',
+        'DejaVu Sans Mono'
     ];
 
-    private hfClient: HfInference;
+    //private hfClient: HfInference;
 
     constructor(public handleOutput: (text: string) => void) {
-        this.hfClient = new HfInference(this.HF_API_KEY);
+        //this.hfClient = new HfInference(this.HF_API_KEY);
     }
 
 
@@ -167,7 +166,8 @@ export class ConsoleApp {
 
                 case 'ai':
                     if(argument){
-                        await this.handleAIQuery(argument);
+                        //await this.handleAIQuery(argument);
+                        this.handleOutput('This is an AI free zone. But if you insist, you may go to google.com and type in:');
                     }else {
                         this.handleOutput('Usage: ai &lt;query&gt;');
                     }
@@ -900,9 +900,9 @@ Example: cust c1 ff0000`);
                 this.applyFont(fontName);
                 this.handleOutput(`Font updated to: ${fontName}`);
             } catch (error) {
-                this.handleOutput(`Failed to load font "${fontName}". Falling back to default font.`);
-                this.applyFont('Courier New'); // Fallback to a default font
+                this.handleOutput(`Failed to load font "${fontName}". Must exist on Google Fonts.`);
             }
+            return;
         }
 
         const [type, value] = args.split(' ');
@@ -999,7 +999,7 @@ Example: cust c1 ff0000`);
     private capitalizeFontName(fontName: string): string {
         return fontName
             .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
     }
 
@@ -1098,6 +1098,7 @@ Example: cust c1 ff0000`);
         }
     }
 
+    /*
     aiPrePromt = "You are a helpful AI assistant in a terminal-based movie streaming app called ratflix. " +
         "You are called ratflixAI. Keep responses short, concise and relevant to movies and TV shows when possible. " +
         "Format lists with bullet points. Include movie ratings when mentioning specific titles." +
@@ -1134,5 +1135,5 @@ Example: cust c1 ff0000`);
                 this.handleOutput(`Error: ${error.message}`);
             }
         }
-    }
+    }*/
 }

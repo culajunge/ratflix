@@ -357,6 +357,42 @@ cust exp // Export current theme
 }
 ```
 
+### Papyrus
+
+```bash
+```ScrollStream theme
+{
+  "--path-color": "#5c4b33",
+  "--prompt-color": "#5c4b33",
+  "--command-color": "#8b5a2b",
+  "--args-color": "#a0522d",
+  "--prompt-symbol": ": ",
+  "--title-color": "#5c4b33",
+  "--title-text": "ScrollStream",
+  "--background-color": "#ffe1ad",
+  "--output-color": "#5c4b33",
+  "--console-font": "\"Tangerine\", monospace"
+}
+```
+
+### CssLess
+
+```bash
+```CssLess theme
+{
+  "--path-color": "#000000",
+  "--prompt-color": "#000000",
+  "--command-color": "#000000",
+  "--args-color": "#000000",
+  "--prompt-symbol": " ",
+  "--title-color": "#000000",
+  "--title-text": "Virus.exe",
+  "--background-color": "#ffffff",
+  "--output-color": "#000000",
+   "--console-font": "\"Times New Roman\", monospace"
+}
+```
+
 ### Jetbrains
 ```bash
 ### JetBrains Stream  
@@ -372,7 +408,7 @@ cust exp // Export current theme
   "--title-text": "BretJains",
   "--background-color": "#2b2b2b",
   "--output-color": "#f1d8de",
-  "--console-font": "\"Monaco\", monospace"
+  "--console-font": "\"JetBrains Mono\", monospace"
 }
 ```
 

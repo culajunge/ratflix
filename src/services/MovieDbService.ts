@@ -13,7 +13,7 @@ export class MovieDbService {
 
     public static readonly vidProviders = [
         {
-            name: "vidsrc (recommended)",
+            name: "vidsrc (stable)",
         },
         {
             name: "superembed",
@@ -23,12 +23,6 @@ export class MovieDbService {
         },
         {
             name: "autoembed"
-        },
-        {
-            name: "Germanus Animus"
-        },
-        {
-            name: "Germanus Serius"
         }
     ];
 
@@ -166,4 +160,6 @@ export class MovieDbService {
         const TV_BASE_URL_4 = `https://player.autoembed.cc/embed/tv/${showId}/${season}/${episode}`;
         return TV_BASE_URL_4;
     }
+
+
 }
