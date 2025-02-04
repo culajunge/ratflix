@@ -810,6 +810,7 @@ cust c7 - Text output color (current: ${this.loadSettings()['--output-color']})
 
 cust t - Change title text (current: ${this.loadSettings()['title-text']}) 
 cust ps - Change prompt symbol (current: ${this.loadSettings()['--prompt-symbol']}) 
+cust f {Google Fonts name} - Change font (current: ${this.loadSettings()['--console-font']})
 cust r - Reset all settings to default
 cust exp - Export settings to JSON
 cust imp - Import settings from JSON
@@ -854,7 +855,7 @@ Example: cust c1 ff0000`);
                 '--prompt-color': '#ffffff',
                 '--command-color': '#e74856',
                 '--args-color': '#cbcbcb',
-                '--prompt-symbol': '/>',
+                '--prompt-symbol': '~$',
                 '--title-color': '#e74856',
                 '--title-text': 'ratflix',
                 '--background-color': '#1e1e1e',
@@ -1015,7 +1016,7 @@ Example: cust c1 ff0000`);
             '--title-text': rootStyles.getPropertyValue('--title-text').trim(),
             '--background-color': rootStyles.getPropertyValue('--background-color').trim(),
             '--output-color': rootStyles.getPropertyValue('--output-color').trim(),
-            '--console-font': rootStyles.getPropertyValue('--console-font').trim() || 'Courier New',
+            '--console-font': rootStyles.getPropertyValue('--console-font').trim() || 'Monaco',
         };
 
         const savedSettings = localStorage.getItem('consoleSettings');

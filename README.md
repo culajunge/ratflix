@@ -144,6 +144,26 @@ cust exp // Export current theme
 }
 ```
 
+
+### Jetbrains
+```bash
+### JetBrains Stream  
+```bash
+```Jetbrains theme
+{
+  "--path-color": "#6a9fb5",
+  "--prompt-color": "#ffffff",
+  "--command-color": "#cc7832",
+  "--args-color": "#ffc66d",
+  "--prompt-symbol": "~$ ",
+  "--title-color": "#6897bb",
+  "--title-text": "ratflix",
+  "--background-color": "#2b2b2b",
+  "--output-color": "#f1d8de",
+  "--console-font": "\"JetBrains Mono\", monospace"
+}
+```
+
 ### Hackflix theme
 ```bash
 ```hackflix theme
@@ -390,25 +410,6 @@ cust exp // Export current theme
   "--background-color": "#ffffff",
   "--output-color": "#000000",
    "--console-font": "\"Times New Roman\", monospace"
-}
-```
-
-### Jetbrains
-```bash
-### JetBrains Stream  
-```bash
-```BretJains theme
-{
-  "--path-color": "#6a9fb5",
-  "--prompt-color": "#ffffff",
-  "--command-color": "#cc7832",
-  "--args-color": "#ffc66d",
-  "--prompt-symbol": ">",
-  "--title-color": "#6897bb",
-  "--title-text": "BretJains",
-  "--background-color": "#2b2b2b",
-  "--output-color": "#f1d8de",
-  "--console-font": "\"JetBrains Mono\", monospace"
 }
 ```
 

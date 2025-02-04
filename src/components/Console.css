@@ -4,7 +4,7 @@
     --prompt-color: #ffffff;
     --command-color: #e74856;
     --args-color: #cbcbcb;
-    --prompt-symbol: "/>";
+    --prompt-symbol: "~$";
     --title-color: #e74856;
     --title-text: 'ratflix';
     --background-color: #1e1e1e;
@@ -43,7 +43,7 @@
     height: 100vh;
     background-color: var(--background-color);
     color: var(--output-color);
-    font-family: var(--console-font), 'Courier New', monospace !important;
+    font-family: var(--console-font), 'Monaco', monospace !important;
     overflow: hidden;
     cursor: text;
     text-align: left;
