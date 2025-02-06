@@ -147,8 +147,6 @@ cust exp // Export current theme
 
 ### Jetbrains
 ```bash
-### JetBrains Stream  
-```bash
 ```Jetbrains theme
 {
   "--path-color": "#6a9fb5",

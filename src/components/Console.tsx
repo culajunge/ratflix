@@ -19,7 +19,6 @@ const Console: React.FC = () => {
         const command = parts[0];
         const args = parts.slice(1).join(' ');
 
-        // noinspection XmlDeprecatedElement
         return (
             <span style={{
                 position: 'relative',
@@ -27,65 +26,62 @@ const Console: React.FC = () => {
                 alignItems: 'center',
                 margin: 0,
                 padding: 0,
-                minWidth: '8px' // This ensures there's always space for the cursor
+                minWidth: '8px'
             }}>
-            <textarea
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                onKeyDown={handleKeyDown}
-                onKeyPress={(e) => {
-                    if (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter') {
-                        e.preventDefault();
-                        handleCommand(input.trim());
-                    }
-                }}
-                onMouseUp={(e) => {
-                    // Prevent the textarea from losing focus
+        <textarea
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onKeyDown={handleKeyDown}
+            onKeyPress={(e) => {
+                if (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter') {
                     e.preventDefault();
-                    if (inputRef.current) {
-                        inputRef.current!.focus();
-                    }
-                }}
-                rows={1}
-                wrap="off"
-                spellCheck={false}
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    color: 'transparent',
-                    caretColor: '#fff',
-                    background: 'transparent',
-                    border: 'none',
-                    outline: 'none',
-                    resize: 'none',
-                    padding: 0,
-                    margin: 0,
-                    font: 'inherit',
-                    lineHeight: 'inherit',
-                    whiteSpace: 'pre-wrap',
-                    WebkitTextFillColor: 'transparent',
-                    WebkitUserModify: 'read-write-plaintext-only',
-                    userSelect: 'none',
-                    overflow: 'hidden'
-                }}
-            />
-            <span style={{
-                display: 'inline',
-                pointerEvents: 'none',
-                margin: 0,
+                    handleCommand(input.trim());
+                }
+            }}
+            onMouseUp={(e) => {
+                e.preventDefault();
+                if (inputRef.current) {
+                    inputRef.current!.focus();
+                }
+            }}
+            wrap="soft"
+            spellCheck={false}
+            style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                color: 'transparent',
+                caretColor: '#fff',
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                resize: 'none',
                 padding: 0,
-                whiteSpace: 'pre' // Preserves spaces
-            }}>
-                <span style={{ color: 'var(--command-color)' }}>{command}</span>
-                {args && <span style={{ color: 'var(--args-color)' }}>{args ? ` ${args}` : ''}</span>}
-            </span>
+                margin: 0,
+                font: 'inherit',
+                lineHeight: 'inherit',
+                whiteSpace: 'pre',
+                WebkitTextFillColor: 'transparent',
+                WebkitUserModify: 'read-write-plaintext-only',
+                userSelect: 'none'
+            }}
+        />
+        <span style={{
+            display: 'inline',
+            pointerEvents: 'none',
+            margin: 0,
+            padding: 0,
+            whiteSpace: 'pre'
+        }}>
+            <span style={{ color: 'var(--command-color)' }}>{command}</span>
+            {args && <span style={{ color: 'var(--args-color)' }}>{args ? ` ${args}` : ''}</span>}
         </span>
+    </span>
         );
     };
     const [isFocused, setIsFocused] = useState(true);

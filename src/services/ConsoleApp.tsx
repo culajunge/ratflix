@@ -95,7 +95,7 @@ export class ConsoleApp {
                     break;
 
                 case 'pwd':
-                    this.handleOutput(this.currentPath);
+                    this.handleOutput('/' + this.currentPath);
                     break;
 
                 case 'p':
@@ -120,14 +120,16 @@ export class ConsoleApp {
                     break;
 
                 case 'd':
-                case 'download':
-                    await this.downloadMedia(argument);
+                case 'des':
+                case 'desc':
+                case 'description':
+                    this.handleOutput(this.getCurrentDescription());
                     break;
 
                 case 'hi':
                 case 'hs':
                 case 'history':
-                    this.displayWatchHistory();
+                    this.displayWatchHistory(argument);
                     break;
 
                 case 'l':
@@ -164,6 +166,11 @@ export class ConsoleApp {
                     this.handleOutput(this.currentURL);
                     break;
 
+                case 'r':
+                case 'reset':
+                    this.reset();
+                    break;
+
                 case 'ai':
                     if(argument){
                         //await this.handleAIQuery(argument);
@@ -171,6 +178,7 @@ export class ConsoleApp {
                     }else {
                         this.handleOutput('Usage: ai &lt;query&gt;');
                     }
+                    break;
 
                 case 'echo':
                     this.Echo(argument);
@@ -188,6 +196,18 @@ export class ConsoleApp {
                     if(argument.toLowerCase() === 'there'){
                         this.handleOutput('GENERAL KENOBI!');
                     }
+                    break;
+
+                case 'alright':
+                    if(argument.length === 0) {
+                        this.handleOutput('alright alright');
+                    }
+                    break;
+
+                case 'hack':
+                case 'hacker':
+                case 'hacking':
+                    this.coolHacking(argument);
                     break;
 
                 default:
@@ -271,6 +291,11 @@ export class ConsoleApp {
         this.currentMediaResult = null;
         this.currentSearchResult = null;
         this.currentWatchHistory = [];
+    }
+
+    private reset(): void{
+        this.toRoot();
+        this.clearConsole();
     }
 
     private async selectMedia(argument: string): Promise<void> {
@@ -361,7 +386,10 @@ export class ConsoleApp {
                     break;
             }
         } catch (error) {
-            this.handleOutput(`Error: ${error instanceof Error ? error.message : String(error)}`);
+            this.handleOutput(`Error: ${error instanceof Error ? error.message : String(error)}, use cd to go to root`);
+            if(this.currentMediaResult === null || this.currentMediaResult === undefined) {
+                this.toRoot();
+            }
         }
 
     }
@@ -394,7 +422,10 @@ export class ConsoleApp {
                 this.handleOutput("Usage: cd <index>");
             }
         } catch (error) {
-            this.handleOutput(`Error: ${error instanceof Error ? error.message : String(error)}`);
+            this.handleOutput(`Error: Media does not exist or contains typo, dont mind this: ${error instanceof Error ? error.message : String(error)}`);
+            if(this.currentMediaResult === null || this.currentMediaResult === undefined) {
+                this.toRoot();
+            }
         }
 
 
@@ -684,7 +715,12 @@ export class ConsoleApp {
     }
 
 // Modify the displayWatchHistory method
-    private displayWatchHistory(): void {
+    private displayWatchHistory(arg:string): void {
+
+        if(arg.toLowerCase() === 'clear' || arg.toLowerCase() === 'd' || arg.toLowerCase() === 'delete' || arg.toLowerCase() === 'rm' || arg.toLowerCase() === 'remove' || arg.toLowerCase() === '-d' || arg.toLowerCase() === '-rm') {
+            this.deleteWatchHistory();
+            return;
+        }
         // Refresh the current watch history
         this.currentWatchHistory = this.getWatchHistory();
 
@@ -703,6 +739,10 @@ export class ConsoleApp {
         });
     }
 
+    private deleteWatchHistory(): void {
+        localStorage.removeItem('watchHistory');
+        this.handleOutput("Watch history deleted.");
+    }
 
     private getWatchHistory(): WatchProgress[] {
         try {
@@ -794,6 +834,30 @@ export class ConsoleApp {
         this.handleOutput(`Video provider set to: ${MovieDbService.vidProviders[newIndex].name}`);
     }
 
+    private async resetCustomization(): Promise<void>{
+        localStorage.removeItem('consoleSettings');
+
+        const defaultSettings = {
+            '--path-color': '#868686',
+            '--prompt-color': '#ffffff',
+            '--command-color': '#e74856',
+            '--args-color': '#cbcbcb',
+            '--prompt-symbol': '~$',
+            '--title-color': '#e74856',
+            '--title-text': 'ratflix',
+            '--background-color': '#1e1e1e',
+            '--output-color': '#fff',
+            '--console-font': 'Courier New',
+        };
+
+        Object.entries(defaultSettings).forEach(([variable, value]) => {
+            document.documentElement.style.setProperty(variable, value);
+        });
+
+        this.handleOutput("Settings reset to default");
+        this.printLogo();
+    }
+
 
     private async handleCustomization(args: string): Promise<void> {
 
@@ -848,27 +912,7 @@ Example: cust c1 ff0000`);
         }
 
         if (args.toLowerCase() === 'r' || args.toLowerCase() === 'reset') {
-            localStorage.removeItem('consoleSettings');
-
-            const defaultSettings = {
-                '--path-color': '#868686',
-                '--prompt-color': '#ffffff',
-                '--command-color': '#e74856',
-                '--args-color': '#cbcbcb',
-                '--prompt-symbol': '~$',
-                '--title-color': '#e74856',
-                '--title-text': 'ratflix',
-                '--background-color': '#1e1e1e',
-                '--output-color': '#fff',
-                '--console-font': 'Courier New',
-            };
-
-            Object.entries(defaultSettings).forEach(([variable, value]) => {
-                document.documentElement.style.setProperty(variable, value);
-            });
-
-            this.handleOutput("Settings reset to default");
-            this.printLogo();
+            await this.resetCustomization();
             return;
         }
 
@@ -1098,6 +1142,110 @@ Example: cust c1 ff0000`);
             this.handleOutput('Invalid JSON format. Please check your input.');
         }
     }
+
+    private getCurrentDescription(): string {
+        return this.currentMediaResult?.overview ?? "No Media Found, use cd or p to select media";
+    }
+
+    private async deleteFuckingEverything(): Promise<void>{
+        this.deleteWatchHistory();
+        await this.resetCustomization();
+    }
+
+    private async coolHacking(argument: string): Promise<void> {
+        if(!argument){
+            this.handleOutput("ERROR: No Target provided");
+            return;
+        }else if(argument.toLowerCase() === 'ratflix' || argument.toLowerCase() === 'ratflix.de') {
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            this.handleOutput("ERROR: You are not allowed to hack into ratflix");
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            this.handleOutput("Now what should I do with such a bad bad bad bad bad boy like u???");
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            this.handleOutput("I know, I'll just delete you from the database in like 900ms");
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            await this.deleteFuckingEverything();
+            this.clearConsole();
+            this.handleOutput('farewell');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            window.close();
+            window.location.href = 'about:blank';
+            window.top?.close();
+            return;
+        }
+
+        // Create seeded random number generator
+        const seed = Array.from(argument).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        let randomState = seed;
+        const seededRandom = () => {
+            randomState = (1664525 * randomState + 1013904223) % 4294967296;
+            return randomState / 4294967296;
+        };
+
+        const emailMock = `admin@${argument.includes('.') ? argument : argument + '.com'}`;
+
+        const hackingMessages = [
+            "Establishing connection to " + argument + "...",
+            "Scanning open ports...",
+            "Found " + Math.floor(seededRandom() * 100) + " open ports",
+            "Generating payload...",
+            "Generated payload successfully!",
+            "Intercepting network packets...",
+            "Injected payload successfully!",
+            "Waiting for " + argument + " to respond...",
+            "Still waiting...",
+            "Received response!",
+            "Decrypting data...",
+            Math.floor(seededRandom() * 1000000).toString(16),
+            Math.floor(seededRandom() * 1000000).toString(16),
+            Math.floor(seededRandom() * 1000000).toString(16),
+            "ERROR " + Math.floor(seededRandom() * 1000000).toString(16) + ": Decryption failed",
+            "Implementing SHA-256 encryption...",
+            "Applying " + argument + " patches",
+            "Response decrypted successfully!",
+            "Master email address: " + emailMock,
+            "Master password: " + this.generatePassword(argument),
+            "well done :)"
+        ];
+
+        for (const message of hackingMessages) {
+            const randomBytes = Math.floor(seededRandom() * 1000000).toString(16);
+            await new Promise(resolve => setTimeout(resolve, seededRandom() * 5000 + 500));
+            this.handleOutput(`0x${randomBytes}: ` + message);
+        }
+    }
+
+    private generatePassword(seed: string): string {
+        const upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowerChars = 'abcdefghijklmnopqrstuvwxyz';
+        const numbers = '0123456789';
+        const specialChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+        // Create seeded random number generator
+        let randomState = Array.from(seed).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const seededRandom = () => {
+            randomState = (1664525 * randomState + 1013904223) % 4294967296;
+            return randomState / 4294967296;
+        };
+
+        const allChars = upperChars + lowerChars + numbers + specialChars;
+        let password = '';
+
+        // Ensure at least one of each type
+        password += upperChars[Math.floor(seededRandom() * upperChars.length)];
+        password += lowerChars[Math.floor(seededRandom() * lowerChars.length)];
+        password += numbers[Math.floor(seededRandom() * numbers.length)];
+        password += specialChars[Math.floor(seededRandom() * specialChars.length)];
+
+        // Fill the rest randomly
+        for (let i = password.length; i < 16; i++) {
+            password += allChars[Math.floor(seededRandom() * allChars.length)];
+        }
+
+        // Shuffle the password using seeded random
+        return password.split('').sort(() => seededRandom() - 0.5).join('');
+    }
+
 
     /*
     aiPrePromt = "You are a helpful AI assistant in a terminal-based movie streaming app called ratflix. " +
