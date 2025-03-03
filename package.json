@@ -13,12 +13,14 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@distube/ytdl-core": "^4.15.9",
     "@huggingface/inference": "^3.1.4",
     "@types/ffmpeg": "^1.0.7",
     "cors-anywhere": "^0.4.4",
     "get-current-line": "^7.4.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

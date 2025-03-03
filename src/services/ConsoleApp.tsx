@@ -4,6 +4,7 @@ import {WatchProgress} from '../types/WatchHistory.ts';
 import {Simulate} from "react-dom/test-utils";
 import progress = Simulate.progress;
 
+
 export class ConsoleApp {
 
     private hasInitialized = false;
@@ -169,6 +170,10 @@ export class ConsoleApp {
                 case 'r':
                 case 'reset':
                     this.reset();
+                    break;
+
+                case 'yt':
+                    await this.downloadYoutubeVideo(argument);
                     break;
 
                 case 'ai':
@@ -664,7 +669,6 @@ export class ConsoleApp {
     }
 
     private async playEpisode(url: string): Promise<void> {
-        this.handleOutput(`Playing: ${this.currentMediaResult?.name} S${this.currentSeason?.season_number} E${this.currentEpisodeIndex}`);
         this.currentURL = url;
         // Save progress when playing an episode
         if (this.currentMediaResult?.media_type === 'tv') {
@@ -676,6 +680,7 @@ export class ConsoleApp {
         }
 
         window.dispatchEvent(new CustomEvent('playVideo', { detail: url }));
+        this.handleOutput(`Playing: ${this.currentMediaResult?.name} S${this.currentSeason?.season_number} E${this.currentEpisodeIndex}`);
     }
 
     private clearConsole(): void {
@@ -1246,6 +1251,10 @@ Example: cust c1 ff0000`);
         return password.split('').sort(() => seededRandom() - 0.5).join('');
     }
 
+
+    public async downloadYoutubeVideo(url: string): Promise<void> {
+        
+    }
 
     /*
     aiPrePromt = "You are a helpful AI assistant in a terminal-based movie streaming app called ratflix. " +

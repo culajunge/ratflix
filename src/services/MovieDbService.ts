@@ -25,6 +25,9 @@ export class MovieDbService {
             name: "autoembed"
         },
         {
+            name: "2embed"
+        },
+        {
             name: "vidsrc.me"
         },
         {
@@ -112,22 +115,24 @@ export class MovieDbService {
                 // vidsrc.me (movies only) - does not support TV shows
                 return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
             case 5:
-                return this.getTvShowUrlFsapi(showId.toString(), seasonNumber, episodeNumber);
+                return this.GetTvShow2Embed(showId.toString(), seasonNumber, episodeNumber);
             case 6:
-                return this.getTvShowUrlCurtstream(showId.toString(), seasonNumber, episodeNumber);
+                return this.getTvShowUrlFsapi(showId.toString(), seasonNumber, episodeNumber);
             case 7:
-                return this.getTvShowUrlMoviewp(showId.toString(), seasonNumber, episodeNumber);
+                return this.getTvShowUrlCurtstream(showId.toString(), seasonNumber, episodeNumber);
             case 8:
-                return this.getTvShowUrlApimdb(showId.toString(), seasonNumber, episodeNumber);
+                return this.getTvShowUrlMoviewp(showId.toString(), seasonNumber, episodeNumber);
             case 9:
+                return this.getTvShowUrlApimdb(showId.toString(), seasonNumber, episodeNumber);
+            case 10:
                 // gomo.to (movies only) - does not support TV shows
                 return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
-            case 10:
+            case 11:
                 // vidcloud (movies only) - does not support TV shows
                 return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
-            case 11:
-                return this.getTvShowUrlGetsuperembed(showId.toString(), seasonNumber, episodeNumber);
             case 12:
+                return this.getTvShowUrlGetsuperembed(showId.toString(), seasonNumber, episodeNumber);
+            case 13:
                 return this.getTvShowUrlDatabasegdriveplayer(showId.toString(), seasonNumber, episodeNumber);
             default:
                 return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
@@ -148,20 +153,22 @@ export class MovieDbService {
             case 4:
                 return this.getMovieUrlVidsrcMe(movieId);
             case 5:
-                return this.getMovieUrlFsapi(movieId);
+                return await this.GetMovie2Embed(movieId);
             case 6:
-                return this.getMovieUrlCurtstream(movieId);
+                return this.getMovieUrlFsapi(movieId);
             case 7:
-                return this.getMovieUrlMoviewp(movieId);
+                return this.getMovieUrlCurtstream(movieId);
             case 8:
-                return this.getMovieUrlApimdb(movieId);
+                return this.getMovieUrlMoviewp(movieId);
             case 9:
-                return this.getMovieUrlGomo(movieId);
+                return this.getMovieUrlApimdb(movieId);
             case 10:
-                return this.getMovieUrlVidcloud(movieId);
+                return this.getMovieUrlGomo(movieId);
             case 11:
-                return this.getMovieUrlGetsuperembed(movieId);
+                return this.getMovieUrlVidcloud(movieId);
             case 12:
+                return this.getMovieUrlGetsuperembed(movieId);
+            case 13:
                 return 'https://hackertyper.net/';
             default:
                 return `${MOVIE_BASE_URL_1}${movieId}`;
@@ -307,6 +314,15 @@ export class MovieDbService {
     static async getTvShowUrlDatabasegdriveplayer(showId: string, season: number, episode: number): Promise<string> {
         const TV_BASE_URL_13 = `https://databasegdriveplayer.co/player.php?type=series&tmdb=${showId}&season=${season}&episode=${episode}`;
         return TV_BASE_URL_13;
+    }
+
+    //2Embed
+    static async GetMovie2Embed(showId: string): Promise<string>{
+        return `https://www.2embed.cc/embed/${showId}`;
+    }
+
+    static async GetTvShow2Embed(showId: string, season: number, episode: number): Promise<string>{
+        return `https://www.2embed.cc/embedtv/${showId}&s=${season}&e=${episode}`;
     }
 
 }

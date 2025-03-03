@@ -78,6 +78,27 @@ export const VideoPlayer: React.FC = () => {
         };
     }, []);
 
+    useEffect(() => {
+        const handleMessage = (event: MessageEvent) => {
+            // Only handle messages from our iframe
+            if (event.source === iframeRef.current?.contentWindow) {
+                // If the message indicates a new window/tab attempt, we block it
+                if (event.data?.type === 'openWindow') {
+                    event.preventDefault();
+                    return false;
+                }
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
+    }, [iframeReady]);
+
+
+
     return (
         <div className="video-container">
             {videoUrl ? (
@@ -86,6 +107,7 @@ export const VideoPlayer: React.FC = () => {
                     key={videoUrl}
                     src={videoUrl}
                     allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; microphone; camera; display-capture; autoplay; cross-origin-isolated; midi; geolocation; gyroscope; magnetometer; payment; sync-xhr; usb; accelerometer; ambient-light-sensor; encrypted-media; publickey-credentials-get"
+                    //sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-modals allow-downloads allow-pointer-lock"
                     width="100%"
                     height="100%"
                     onLoad={handleIframeLoad}
