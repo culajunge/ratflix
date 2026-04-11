@@ -64,3 +64,10 @@
     flex-shrink: 0; /* Prevents the spacer from shrinking */
     pointer-events: none; /* Ensures the spacer doesn't interfere with clicks */
 }
+
+@media (orientation: portrait), (max-width: 768px) {
+    /* If video + console are side by side, stack them */
+    .app-container {
+        flex-direction: column;
+    }
+}

@@ -284,7 +284,7 @@ const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
                         ? <div className="gui-player-wrapper"><VideoPlayer/></div>
                         : <div className="gui-placeholder">
                             <img src="/ratflix.webp" alt="ratflix" className="gui-placeholder-logo"/>
-                            <p>Select something to watch</p>
+                            <p>"Nimm dir Zeit und nicht das Leben, scheiß in Klo in nicht daneben" - Gandhi</p>
                         </div>
                     }
                 </main>
