@@ -1,18 +1,32 @@
-import { useState, useRef, useEffect } from 'react';
-import { ConsoleApp } from '../services/ConsoleApp.tsx';
+import {useState, useRef, useEffect} from 'react';
+import {ConsoleApp} from '../services/ConsoleApp.tsx';
 import {ConsoleStore} from "../store/consoleStore.ts";
 
 const Console: React.FC = () => {
     const [input, setInput] = useState('');
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const consoleRef = useRef<HTMLDivElement | null>(null);
-    const consoleAppRef = useRef<ConsoleApp>(new ConsoleApp((output: string) => {
-        if (output === 'CLEAR') {
-            setHistory([]);
+    useEffect(() => {
+        const handleOutput = (output: string) => {
+            if (output === 'CLEAR') {
+                setHistory([]);
+            } else {
+                setHistory(prev => [...prev, output]);
+            }
+        };
+
+        let app = ConsoleStore.getConsoleApp();
+        if (!app) {
+            // CLI-first launch: Console mounts before App.tsx created the instance
+            app = new ConsoleApp(handleOutput);
+            ConsoleStore.setConsoleApp(app);
+            app.initialize();
         } else {
-            setHistory(prev => [...prev, output]);
+            // GUI-first launch: instance already exists, just rewire output to this terminal
+            (app as any).handleOutput = handleOutput;
+            app.printLogo();
         }
-    }));
+    }, []);
 
     const renderInput = (input: string) => {
         const parts = input.split(' ');
@@ -78,8 +92,8 @@ const Console: React.FC = () => {
             padding: 0,
             whiteSpace: 'pre'
         }}>
-            <span style={{ color: 'var(--command-color)' }}>{command}</span>
-            {args && <span style={{ color: 'var(--args-color)' }}>{args ? ` ${args}` : ''}</span>}
+            <span style={{color: 'var(--command-color)'}}>{command}</span>
+            {args && <span style={{color: 'var(--args-color)'}}>{args ? ` ${args}` : ''}</span>}
         </span>
     </span>
         );
@@ -89,21 +103,21 @@ const Console: React.FC = () => {
     const [history, setHistory] = useState<(string | JSX.Element)[]>([]);
 
     const handleCommand = async (command: string) => {
-        const currentPathSnapshot = consoleAppRef.current.getCurrentPath();
+        const currentPathSnapshot = ConsoleStore.getConsoleApp()!.getCurrentPath();
         const formattedCommand = (
             <>
-                <span style={{ color: 'var(--path-color)' }}>{currentPathSnapshot}</span>
-                <span style={{ color: 'var(--prompt-color)' }}>
+                <span style={{color: 'var(--path-color)'}}>{currentPathSnapshot}</span>
+                <span style={{color: 'var(--prompt-color)'}}>
                 {getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}
             </span>
-                <span style={{ color: 'var(--command-color)' }}>{command.split(' ')[0]}</span>
+                <span style={{color: 'var(--command-color)'}}>{command.split(' ')[0]}</span>
                 {command.split(' ').slice(1).join(' ') && (
-                    <span style={{ color: 'var(--args-color)' }}> {command.split(' ').slice(1).join(' ')}</span>
+                    <span style={{color: 'var(--args-color)'}}> {command.split(' ').slice(1).join(' ')}</span>
                 )}
             </>
         );
         setHistory(prev => [...prev, formattedCommand]);
-        await consoleAppRef.current.handleCommand(command);
+        await ConsoleStore.getConsoleApp()!.handleCommand(command);
         setInput('');
     };
     const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -156,12 +170,6 @@ const Console: React.FC = () => {
     }, [history]);
 
     const [hasMounted, setHasMounted] = useState(false);
-    // Initial focus and scroll
-    // One-time initialization
-    useEffect(() => {
-        ConsoleStore.setConsoleApp(consoleAppRef.current);
-        consoleAppRef.current.initialize();
-    }, []);
 
     useEffect(() => {
         inputRef.current!.focus();
@@ -181,11 +189,11 @@ const Console: React.FC = () => {
                 className="console-container"
                 onClick={handleConsoleClick}
             >
-            <div className="console" ref={consoleRef}>
+                <div className="console" ref={consoleRef}>
                     {history.map((line, i) => (
                         <div key={i} className="console-line">
                             {typeof line === 'string'
-                                ? <span dangerouslySetInnerHTML={{ __html: line }} />
+                                ? <span dangerouslySetInnerHTML={{__html: line}}/>
                                 : line
                             }
                         </div>
@@ -196,7 +204,7 @@ const Console: React.FC = () => {
                             flexShrink: 0,
                             whiteSpace: 'pre-wrap',
                             wordWrap: 'normal'
-                        }}>{consoleAppRef.current.getCurrentPath()}</span>
+                        }}>{ConsoleStore.getConsoleApp()!.getCurrentPath()}</span>
                         <span style={{
                             color: 'var(--prompt-color)',
                             flexShrink: 0,
@@ -205,7 +213,7 @@ const Console: React.FC = () => {
                         }}>{getComputedStyle(document.documentElement).getPropertyValue('--prompt-symbol').replace(/['"]/g, '')}</span>
                         {renderInput(input)} {/* Removed the space character before renderInput */}
                     </div>
-                    <div className="console-spacer" style={{ height: '20vh' }}></div>
+                    <div className="console-spacer" style={{height: '20vh'}}></div>
                 </div>
             </form>
         </div>

@@ -1,4 +1,4 @@
-import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
+import {MediaResult, SearchResult, Season, TvShowDetails} from '../types/MediaTypes.ts';
 import {ConsoleStore} from "../store/consoleStore.ts";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -92,7 +92,7 @@ export class MovieDbService {
         return await response.json();
     }
 
-    static getBackGroundColor(): string{
+    static getBackGroundColor(): string {
         const consoleapp = ConsoleStore.getConsoleApp();
         const settings = consoleapp?.loadSettings();
         const color = settings!['--background-color'].replace('#', '');
@@ -178,7 +178,7 @@ export class MovieDbService {
     //vidsrc
     static async getMovieUrl1(movieId: string, autoplay: boolean): Promise<string> {
         let url = `${MOVIE_BASE_URL_1}${movieId}`;
-        if(autoplay) {
+        if (autoplay) {
             //Not working
             url += '&autoplay=1';
         }
@@ -187,7 +187,7 @@ export class MovieDbService {
 
     static async getTvShowUrl1(showId: string, season: number, episode: number, autoplay: boolean): Promise<string> {
         let url = `${TV_BASE_URL_1}${showId}&season=${season}&episode=${episode}`;
-        if(autoplay){
+        if (autoplay) {
             // Not working
             url += '&autoplay=1';
         }
@@ -209,7 +209,7 @@ export class MovieDbService {
         return MOVIE_BASE_URL_3;
     }
 
-    static async getTvShowUrl3(showId:string, season:number, episode:number):Promise<string>{
+    static async getTvShowUrl3(showId: string, season: number, episode: number): Promise<string> {
         var imdbid = await this.getImdbId(showId, 'tv');
         const TV_BASE_URL_3 = `https://www.NontonGo.win/embed/tv/${imdbid}/${season.toString()}/${episode.toString()}`;
         return TV_BASE_URL_3;
@@ -317,11 +317,11 @@ export class MovieDbService {
     }
 
     //2Embed
-    static async GetMovie2Embed(showId: string): Promise<string>{
+    static async GetMovie2Embed(showId: string): Promise<string> {
         return `https://www.2embed.cc/embed/${showId}`;
     }
 
-    static async GetTvShow2Embed(showId: string, season: number, episode: number): Promise<string>{
+    static async GetTvShow2Embed(showId: string, season: number, episode: number): Promise<string> {
         return `https://www.2embed.cc/embedtv/${showId}&s=${season}&e=${episode}`;
     }
 

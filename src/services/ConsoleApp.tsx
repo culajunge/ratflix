@@ -1,8 +1,9 @@
-import { MovieDbService } from './MovieDbService.ts';
-import { MediaResult, SearchResult, Season, TvShowDetails } from '../types/MediaTypes.ts';
+import {MovieDbService} from './MovieDbService.ts';
+import {MediaResult, SearchResult, Season, TvShowDetails} from '../types/MediaTypes.ts';
 import {WatchProgress} from '../types/WatchHistory.ts';
 import {Simulate} from "react-dom/test-utils";
 import progress = Simulate.progress;
+import {GuiState} from "../types/GuiState.ts";
 
 
 export class ConsoleApp {
@@ -14,6 +15,7 @@ export class ConsoleApp {
         this.hasInitialized = true;
         await this.applySettings();
         this.printLogo();
+        this.emitGuiState();
     }
 
     private defaultPromptSymbol = "/>";
@@ -172,15 +174,20 @@ export class ConsoleApp {
                     this.reset();
                     break;
 
+                case 'gui':
+                    window.dispatchEvent(new CustomEvent('switchView', {detail: 'gui'}));
+                    this.handleOutput('Switching to GUI mode...');
+                    break;
+
                 case 'yt':
                     await this.downloadYoutubeVideo(argument);
                     break;
 
                 case 'ai':
-                    if(argument){
+                    if (argument) {
                         //await this.handleAIQuery(argument);
                         this.handleOutput('This is an AI free zone. But if you insist, you may go to google.com and type in:');
-                    }else {
+                    } else {
                         this.handleOutput('Usage: ai &lt;query&gt;');
                     }
                     break;
@@ -198,13 +205,13 @@ export class ConsoleApp {
                     break;
 
                 case 'hello':
-                    if(argument.toLowerCase() === 'there'){
+                    if (argument.toLowerCase() === 'there') {
                         this.handleOutput('GENERAL KENOBI!');
                     }
                     break;
 
                 case 'alright':
-                    if(argument.length === 0) {
+                    if (argument.length === 0) {
                         this.handleOutput('alright alright');
                     }
                     break;
@@ -220,14 +227,127 @@ export class ConsoleApp {
                     break;
             }
 
-            if(command === "c" || command === "clear") {
-               return;
+            if (command === "c" || command === "clear") {
+                return;
             }
             this.handleOutput('\n');
         } catch (error) {
             this.handleOutput("An error occurred: " + error.message);
         }
 
+    }
+
+    private emitGuiState(): void {
+        const state: GuiState = {
+            mode: this.currentSeason !== null ? 'season'
+                : this.currentMediaResult !== null ? 'media'
+                    : this.currentSearchResult !== null ? 'search'
+                        : 'home',
+            searchResults: this.currentSearchResult?.results ?? [],
+            currentMedia: this.currentMediaResult,
+            currentSeason: this.currentSeason,
+            currentEpisodeIndex: this.currentEpisodeIndex,
+            watchHistory: this.getWatchHistory(),
+        };
+        window.dispatchEvent(new CustomEvent('guiStateUpdate', {detail: state}));
+    }
+
+    private reloadVideoPlayer() {
+        if (!this.currentURL) return;
+
+        this.playLastWatched();
+    }
+
+    public async search(query: string): Promise<void> {
+        this.currentMediaResult = null;
+        this.currentSeason = null;
+        this.currentSeasonIndex = -1;
+        this.currentEpisodeIndex = -1;
+        this.currentMediaIndex = -1;
+        this.currentPath = '';
+
+        const searchResult = await MovieDbService.searchMulti(query);
+        this.currentSearchResult = searchResult;
+        this.DisplaySearchResult();
+        this.emitGuiState();
+    }
+
+    public async selectMediaByIndex(index: number): Promise<void> {
+        // 0-based index
+        if (!this.currentSearchResult) return;
+        this.currentMediaResult = this.currentSearchResult.results[index];
+        this.currentPath = this.currentMediaResult.title ?? this.currentMediaResult.name ?? '';
+        this.currentMediaIndex = index;
+        this.currentSeason = null;
+        this.currentSeasonIndex = -1;
+        this.currentEpisodeIndex = -1;
+        this.emitGuiState();
+    }
+
+    public async selectSeasonByNumber(seasonNumber: number): Promise<void> {
+        if (!this.currentMediaResult) return;
+        this.currentSeasonIndex = seasonNumber;
+        this.currentSeason = await MovieDbService.getSeasonDetails(
+            this.currentMediaResult.id, seasonNumber
+        );
+        this.currentPath = `${this.currentMediaResult.title ?? this.currentMediaResult.name}/Season ${seasonNumber}`;
+        this.emitGuiState();
+    }
+
+    public async playEpisodeByNumber(episodeNumber: number): Promise<void> {
+        if (!this.currentMediaResult || !this.currentSeason) return;
+        this.currentEpisodeIndex = episodeNumber;
+        const url = await MovieDbService.getEpisodeUrl(
+            this.currentMediaResult.id,
+            this.currentSeason.season_number,
+            episodeNumber
+        );
+        await this.playEpisode(url);
+    }
+
+    public async playCurrentMovie(): Promise<void> {
+        if (!this.currentMediaResult || this.currentMediaResult.media_type !== 'movie') return;
+        await this.playMovie(this.currentMediaResult.id.toString());
+    }
+
+    public async playFromHistory(progress: WatchProgress): Promise<void> {
+        const searchResult = await MovieDbService.searchMulti(progress.showName, true);
+        if (!searchResult?.results?.length) return;
+        this.currentMediaResult = searchResult.results[0];
+        this.currentSeason = await MovieDbService.getSeasonDetails(
+            progress.showId, progress.seasonNumber
+        );
+        this.currentEpisodeIndex = progress.episodeNumber;
+        this.currentPath = `${progress.showName}/Season ${progress.seasonNumber}`;
+        const url = await MovieDbService.getEpisodeUrl(
+            progress.showId, progress.seasonNumber, progress.episodeNumber
+        );
+        await this.playEpisode(url);
+    }
+
+    public goBack(): void {
+        if (this.currentSeason !== null) {
+            this.currentSeason = null;
+            this.currentSeasonIndex = -1;
+            this.currentEpisodeIndex = -1;
+            this.currentPath = this.currentMediaResult?.title ?? this.currentMediaResult?.name ?? '';
+        } else {
+            this.currentMediaResult = null;
+            this.currentMediaIndex = -1;
+            this.currentPath = '';
+        }
+        this.emitGuiState();
+    }
+
+    public resetState(): void {
+        this.toRoot();
+    }
+
+    public setProviderIndex(index: number): void {
+        MovieDbService.currentVidProviderIndex = index;
+        localStorage.setItem('vidProviderIndex', index.toString());
+
+        this.reloadVideoPlayer();
     }
 
     private Echo(text: string): void {
@@ -249,9 +369,9 @@ export class ConsoleApp {
         window.open(repoUrl, "_blank");
     }
 
-    private DisplaySearchResult(): void{
+    public DisplaySearchResult(): void {
 
-        if(this.currentSearchResult!.results.length <= 0){
+        if (this.currentSearchResult!.results.length <= 0) {
             this.handleOutput("No results found.");
             return;
         }
@@ -259,6 +379,7 @@ export class ConsoleApp {
         this.currentSearchResult!.results.forEach((result, index) => {
             this.handleOutput(`${index + 1}. ${result.title ?? result.name} (${result.media_type})`);
         });
+        this.emitGuiState();
         this.handleOutput("...");
     }
 
@@ -266,6 +387,7 @@ export class ConsoleApp {
         const helpText = [
             "\nAvailable commands:",
             "------------------",
+            "gui                    - Interface for noobs",
             "f &lt;search term&gt;  - Find movies and TV shows",
             "cd &lt;index&gt;       - Change directory to a media item",
             "ls               - List items in the current directory",
@@ -287,7 +409,7 @@ export class ConsoleApp {
         helpText.forEach(line => this.handleOutput(line));
     }
 
-    private toRoot(): void {
+    public toRoot(): void {
         this.currentPath = "";
         this.currentMediaIndex = -1;
         this.currentSeason = null;
@@ -296,14 +418,15 @@ export class ConsoleApp {
         this.currentMediaResult = null;
         this.currentSearchResult = null;
         this.currentWatchHistory = [];
+        this.emitGuiState();
     }
 
-    private reset(): void{
+    public reset(): void {
         this.toRoot();
         this.clearConsole();
     }
 
-    private async selectMedia(argument: string): Promise<void> {
+    public async selectMedia(argument: string): Promise<void> {
 
         try {
             if (argument === "..") {
@@ -316,6 +439,7 @@ export class ConsoleApp {
                     this.currentMediaResult = null;
                     this.currentPath = "";
                 }
+                this.emitGuiState();
                 return;
             }
 
@@ -327,23 +451,23 @@ export class ConsoleApp {
                         const searchResult = await MovieDbService.searchMulti(parts[0], true);
                         this.currentSearchResult = searchResult;
                         parts[0] = "1";
-                    }else if(this.currentSearchResult === null && this.currentWatchHistory.length > 0) {
+                    } else if (this.currentSearchResult === null && this.currentWatchHistory.length > 0) {
                         var num = parseInt(parts[0]);
-                            const media = this.currentWatchHistory[num - 1];
-                            const mediaResult = {
-                                id: media.showId,
-                                media_type: 'tv',
-                                title: media.showName,
-                                release_date: null,
-                                name: media.showName,
-                                first_air_date: null,
-                                overview: media.showName,
-                                vote_average: 69,
-                            } as MediaResult;
-                            this.currentMediaResult = mediaResult;
-                            this.currentSeason = await MovieDbService.getSeasonDetails(media.showId, media.seasonNumber);
-                            this.currentPath = `${media.showName}/Season ${media.seasonNumber}`;
-                            break;
+                        const media = this.currentWatchHistory[num - 1];
+                        const mediaResult = {
+                            id: media.showId,
+                            media_type: 'tv',
+                            title: media.showName,
+                            release_date: null,
+                            name: media.showName,
+                            first_air_date: null,
+                            overview: media.showName,
+                            vote_average: 69,
+                        } as MediaResult;
+                        this.currentMediaResult = mediaResult;
+                        this.currentSeason = await MovieDbService.getSeasonDetails(media.showId, media.seasonNumber);
+                        this.currentPath = `${media.showName}/Season ${media.seasonNumber}`;
+                        break;
                     }
 
                     if (this.currentSeason !== null) {
@@ -361,11 +485,13 @@ export class ConsoleApp {
                         } else {
                             this.handleOutput("Invalid season index: cd <season index>");
                         }
+                        this.emitGuiState();
                         return;
                     }
 
                     // cd into media result
                     await this.selectByNameOrIndex(parts[0]);
+                    this.emitGuiState();
                     break;
 
                 case 2: // cd Breaking Bad/2
@@ -384,22 +510,24 @@ export class ConsoleApp {
                             }
                         }
                     }
+                    this.emitGuiState();
                     break;
 
                 case 3: // cd Breaking Bad/2/13
                     await this.playMedia(`${parts[0]}/${parts[1]}/${parts[2]}`);
+                    this.emitGuiState();
                     break;
             }
         } catch (error) {
             this.handleOutput(`Error: ${error instanceof Error ? error.message : String(error)}, use cd to go to root`);
-            if(this.currentMediaResult === null || this.currentMediaResult === undefined) {
+            if (this.currentMediaResult === null || this.currentMediaResult === undefined) {
                 this.toRoot();
             }
         }
 
     }
 
-    private async selectByNameOrIndex(argument: string): Promise<void> {
+    public async selectByNameOrIndex(argument: string): Promise<void> {
 
         try {
             let success = false;
@@ -428,12 +556,12 @@ export class ConsoleApp {
             }
         } catch (error) {
             this.handleOutput(`Error: Media does not exist or contains typo, dont mind this: ${error instanceof Error ? error.message : String(error)}`);
-            if(this.currentMediaResult === null || this.currentMediaResult === undefined) {
+            if (this.currentMediaResult === null || this.currentMediaResult === undefined) {
                 this.toRoot();
             }
         }
 
-
+        this.emitGuiState();
     }
 
     private stripDownArg(query: string): string {
@@ -449,7 +577,7 @@ export class ConsoleApp {
         return query;
     }
 
-    private async listItems(): Promise<void> {
+    public async listItems(): Promise<void> {
 
         try {
             if (this.currentMediaResult === null) {
@@ -457,6 +585,7 @@ export class ConsoleApp {
                 this.currentSearchResult = trendingResults;
 
                 this.DisplaySearchResult();
+                this.emitGuiState();
                 return;
             } else if (this.currentMediaResult.media_type !== "tv") {
                 this.handleOutput("Error: Selected media is not a TV show.");
@@ -480,10 +609,10 @@ export class ConsoleApp {
         } catch (error) {
             this.handleOutput(`Error: ${error instanceof Error ? error.message : String(error)}`);
         }
-
+        this.emitGuiState();
     }
 
-    private async playMedia(argument: string = ""): Promise<void> {
+    public async playMedia(argument: string = ""): Promise<void> {
 
         try {
             // If no argument provided, try to play current media
@@ -495,11 +624,13 @@ export class ConsoleApp {
 
                 if (this.currentMediaResult.media_type === "movie") {
                     this.playMovie(this.currentMediaResult.id.toString());
+
                     return;
                 }
 
                 if (this.currentMediaResult.media_type === "tv") {
                     this.playEpisode(await MovieDbService.getEpisodeUrl(this.currentMediaResult.id, 1, 1));
+
                     return;
                 }
             }
@@ -539,7 +670,7 @@ export class ConsoleApp {
                             console.log("Duplicate code 1");
                         }
                         break;
-                    }else if(!isNaN(num) && !this.currentSearchResult && this.currentWatchHistory.length > 0){
+                    } else if (!isNaN(num) && !this.currentSearchResult && this.currentWatchHistory.length > 0) {
                         const media = this.currentWatchHistory[num - 1];
                         const mediaResult = {
                             id: media.showId,
@@ -639,17 +770,17 @@ export class ConsoleApp {
 
     public async playNextEpisode(): Promise<void> {
         if (this.currentMediaResult === null || this.currentSeason === null || this.currentEpisodeIndex === -1) {
-            if(this.currentMediaResult !== null && this.currentMediaResult.media_type === 'movie'){
+            if (this.currentMediaResult !== null && this.currentMediaResult.media_type === 'movie') {
                 return;
             }
             this.handleOutput("I do not know which episode was your last.");
             return;
         }
 
-        if(this.currentSeason.episodes.length === this.currentEpisodeIndex) {
+        if (this.currentSeason.episodes.length === this.currentEpisodeIndex) {
             this.currentEpisodeIndex = 1;
             this.currentSeason = await MovieDbService.getSeasonDetails(this.currentMediaResult.id, this.currentSeason.season_number + 1);
-        }else{
+        } else {
             this.currentEpisodeIndex++;
         }
 
@@ -660,15 +791,16 @@ export class ConsoleApp {
         ));
     }
 
-    private async playMovie(movieId: string): Promise<void> {
+    public async playMovie(movieId: string): Promise<void> {
         console.log("Dispatching playVideo event with URL:", `${this.MOVIE_BASE_URL}${movieId}`); // Debug log
         this.handleOutput(`Playing: ${this.currentMediaResult!.title ?? this.currentMediaResult!.name}`);
         const url = await MovieDbService.getMovieUrl(movieId);
         this.currentURL = url;
-        window.dispatchEvent(new CustomEvent('playVideo', { detail: url }));
+        window.dispatchEvent(new CustomEvent('playVideo', {detail: url}));
+        this.emitGuiState();
     }
 
-    private async playEpisode(url: string): Promise<void> {
+    public async playEpisode(url: string): Promise<void> {
         this.currentURL = url;
         // Save progress when playing an episode
         if (this.currentMediaResult?.media_type === 'tv') {
@@ -679,8 +811,9 @@ export class ConsoleApp {
             );
         }
 
-        window.dispatchEvent(new CustomEvent('playVideo', { detail: url }));
+        window.dispatchEvent(new CustomEvent('playVideo', {detail: url}));
         this.handleOutput(`Playing: ${this.currentMediaResult?.name} S${this.currentSeason?.season_number} E${this.currentEpisodeIndex}`);
+        this.emitGuiState();
     }
 
     private clearConsole(): void {
@@ -720,9 +853,9 @@ export class ConsoleApp {
     }
 
 // Modify the displayWatchHistory method
-    private displayWatchHistory(arg:string): void {
+    public displayWatchHistory(arg: string): void {
 
-        if(arg.toLowerCase() === 'clear' || arg.toLowerCase() === 'd' || arg.toLowerCase() === 'delete' || arg.toLowerCase() === 'rm' || arg.toLowerCase() === 'remove' || arg.toLowerCase() === '-d' || arg.toLowerCase() === '-rm') {
+        if (arg.toLowerCase() === 'clear' || arg.toLowerCase() === 'd' || arg.toLowerCase() === 'delete' || arg.toLowerCase() === 'rm' || arg.toLowerCase() === 'remove' || arg.toLowerCase() === '-d' || arg.toLowerCase() === '-rm') {
             this.deleteWatchHistory();
             return;
         }
@@ -763,7 +896,7 @@ export class ConsoleApp {
         return watchHistory.find(entry => entry.showId === showId) || null;
     }
 
-    private async playLastWatched(offset = 0): Promise<void> {
+    public async playLastWatched(offset = 0): Promise<void> {
         if (this.currentMediaResult === null) {
             // Play the most recent show from history
             const watchHistory = this.getWatchHistory();
@@ -818,9 +951,9 @@ export class ConsoleApp {
         this.handleOutput("Video player visibility toggled");
     }
 
+    // In ConsoleApp.tsx, fix handleProvider:
     private handleProvider(arg: string): void {
         if (arg.length === 0) {
-            // List all providers with their indices
             MovieDbService.vidProviders.forEach((provider, index) => {
                 const current = index === MovieDbService.currentVidProviderIndex ? " (current)" : "";
                 this.handleOutput(`${index + 1}: ${provider.name}${current}`);
@@ -830,16 +963,18 @@ export class ConsoleApp {
 
         const newIndex = parseInt(arg.trim()) - 1;
         if (isNaN(newIndex) || newIndex < 0 || newIndex >= MovieDbService.vidProviders.length) {
-            this.handleOutput(`Invalid provider index. Please choose between 0 and ${MovieDbService.vidProviders.length - 1}`);
+            this.handleOutput(`Invalid provider index.`);
             return;
         }
 
         MovieDbService.currentVidProviderIndex = newIndex;
         localStorage.setItem('vidProviderIndex', newIndex.toString());
         this.handleOutput(`Video provider set to: ${MovieDbService.vidProviders[newIndex].name}`);
+
+        this.reloadVideoPlayer();
     }
 
-    private async resetCustomization(): Promise<void>{
+    private async resetCustomization(): Promise<void> {
         localStorage.removeItem('consoleSettings');
 
         const defaultSettings = {
@@ -1152,16 +1287,16 @@ Example: cust c1 ff0000`);
         return this.currentMediaResult?.overview ?? "No Media Found, use cd or p to select media";
     }
 
-    private async deleteFuckingEverything(): Promise<void>{
+    private async deleteFuckingEverything(): Promise<void> {
         this.deleteWatchHistory();
         await this.resetCustomization();
     }
 
     private async coolHacking(argument: string): Promise<void> {
-        if(!argument){
+        if (!argument) {
             this.handleOutput("ERROR: No Target provided");
             return;
-        }else if(argument.toLowerCase() === 'ratflix' || argument.toLowerCase() === 'ratflix.de') {
+        } else if (argument.toLowerCase() === 'ratflix' || argument.toLowerCase() === 'ratflix.de') {
             await new Promise(resolve => setTimeout(resolve, 3000));
             this.handleOutput("ERROR: You are not allowed to hack into ratflix");
             await new Promise(resolve => setTimeout(resolve, 3000));
@@ -1208,9 +1343,7 @@ Example: cust c1 ff0000`);
             "Implementing SHA-256 encryption...",
             "Applying " + argument + " patches",
             "Response decrypted successfully!",
-            "Master email address: " + emailMock,
-            "Master password: " + this.generatePassword(argument),
-            "well done :)"
+            "you're gay"
         ];
 
         for (const message of hackingMessages) {
@@ -1253,45 +1386,7 @@ Example: cust c1 ff0000`);
 
 
     public async downloadYoutubeVideo(url: string): Promise<void> {
-        
+
     }
 
-    /*
-    aiPrePromt = "You are a helpful AI assistant in a terminal-based movie streaming app called ratflix. " +
-        "You are called ratflixAI. Keep responses short, concise and relevant to movies and TV shows when possible. " +
-        "Format lists with bullet points. Include movie ratings when mentioning specific titles." +
-        "Keep in mind that your complete answer will be visible to the user";
-
-    private async handleAIQuery(query: string): Promise<void> {
-        try {
-            this.handleOutput("Thinking...");
-
-            // noinspection TypeScriptValidateTypes
-            const completion = await this.hfClient.textGeneration({
-                model: "microsoft/phi-2",
-                inputs: `System: ${this.aiPrePromt}\nUser: ${query}\nAssistant:`,
-                parameters: {
-                    max_new_tokens: 256,
-                    temperature: 0.7,
-                    top_p: 0.9,
-                    return_full_text: false
-                }
-            });
-
-            // Remove any echoed user input from the response
-            let response = completion.generated_text;
-            if (response.toLowerCase().includes(query.toLowerCase())) {
-                response = response.substring(query.length).trim();
-            }
-
-            this.handleOutput(response);
-
-        } catch (error) {
-            if (error.response?.status === 503) {
-                this.handleOutput("Model is currently loading. Please try again in a few moments.");
-            } else {
-                this.handleOutput(`Error: ${error.message}`);
-            }
-        }
-    }*/
 }

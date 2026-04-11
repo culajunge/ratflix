@@ -1,0 +1,383 @@
+.gui-root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--background-color, #1e1e1e);
+    color: var(--output-color, #fff);
+    font-family: var(--console-font, 'Courier New', monospace);
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* ── Header ── */
+.gui-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 1.25rem;
+    border-bottom: 1px solid #2e2e2e;
+    flex-shrink: 0;
+}
+
+.gui-logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--title-color, #e74856);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.gui-logo:hover {
+    opacity: 0.8;
+}
+
+.gui-search-form {
+    display: flex;
+    flex: 1;
+    max-width: 480px;
+    gap: 0.5rem;
+    margin: 0 auto;
+}
+
+.gui-search-input {
+    flex: 1;
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    color: inherit;
+    padding: 0.35rem 0.75rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.gui-search-input:focus {
+    border-color: var(--title-color, #e74856);
+}
+
+.gui-search-btn {
+    background: var(--title-color, #e74856);
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    padding: 0.35rem 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    transition: opacity 0.15s;
+}
+
+.gui-search-btn:hover {
+    opacity: 0.85;
+}
+
+.gui-cli-btn {
+    background: transparent;
+    border: 1px solid #555;
+    color: inherit;
+    padding: 0.35rem 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.gui-cli-btn:hover {
+    border-color: var(--title-color, #e74856);
+    color: var(--title-color, #e74856);
+}
+
+/* ── Body ── */
+.gui-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.gui-sidebar {
+    width: 320px;
+    min-width: 240px;
+    border-right: 1px solid #2e2e2e;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.gui-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.gui-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid #2e2e2e;
+    font-size: 0.8rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+.gui-back-btn {
+    background: transparent;
+    border: none;
+    color: var(--title-color, #e74856);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.8rem;
+    padding: 0;
+    transition: opacity 0.15s;
+}
+
+.gui-back-btn:hover {
+    opacity: 0.7;
+}
+
+.gui-tiles {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    gap: 0.35rem;
+}
+
+.gui-tile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #2a2a2a;
+    background: #252525;
+    gap: 0.5rem;
+    transition: background 0.1s;
+}
+
+.gui-tile:hover {
+    background: #2e2e2e;
+}
+
+.gui-tile--episode {
+    background: #222;
+}
+
+.gui-tile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.gui-tile-title {
+    font-size: 0.88rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gui-tile-meta {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.gui-tile-ep-num {
+    font-size: 0.75rem;
+    color: var(--title-color, #e74856);
+    font-weight: bold;
+}
+
+.gui-tile-actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.gui-select-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+    border-radius: 3px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: border-color 0.1s, color 0.1s;
+}
+
+.gui-select-btn:hover {
+    border-color: #aaa;
+    color: #fff;
+}
+
+.gui-play-btn {
+    background: var(--title-color, #e74856);
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: opacity 0.1s;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+}
+
+.gui-play-btn:hover {
+    opacity: 0.8;
+}
+
+.gui-play-btn--active {
+    outline: 2px solid #fff;
+    outline-offset: 1px;
+}
+
+.gui-empty {
+    padding: 1.5rem 1rem;
+    color: #555;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* ── Main video area ── */
+.gui-main {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    overflow: hidden;
+    background: #111;
+    min-height: 0;
+}
+
+.gui-player-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.gui-placeholder {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0.3;
+}
+
+.gui-placeholder-logo {
+    width: 72px;
+}
+
+.gui-placeholder p {
+    font-size: 0.9rem;
+}
+
+/* ── Footer ── */
+.gui-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1.25rem;
+    border-top: 1px solid #2e2e2e;
+    flex-shrink: 0;
+    gap: 1rem;
+}
+
+.gui-nav-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: inherit;
+    padding: 0.35rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    transition: border-color 0.15s;
+}
+
+.gui-nav-btn:hover {
+    border-color: var(--title-color, #e74856);
+}
+
+.gui-provider-select {
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    color: inherit;
+    padding: 0.35rem 0.5rem;
+    font-family: inherit;
+    font-size: 0.82rem;
+    flex: 1;
+    max-width: 260px;
+    cursor: pointer;
+}
+
+.gui-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 1.25rem;
+    border-bottom: 1px solid #2e2e2e;
+    flex-shrink: 0;
+    min-width: 0; /* add this */
+    overflow: visible; /* add this */
+}
+
+.gui-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1.25rem;
+    border-top: 1px solid #2e2e2e;
+    flex-shrink: 0;
+    gap: 1rem;
+    min-width: 0; /* add this */
+}
+
+/* Make sure gui-root doesn't clip */
+.gui-root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--background-color, #1e1e1e);
+    color: var(--output-color, #fff);
+    font-family: var(--console-font, 'Courier New', monospace);
+    overflow: hidden;
+    box-sizing: border-box; /* add this */
+}
+
+/* Prevent search form from squeezing buttons out */
+.gui-search-form {
+    display: flex;
+    flex: 1;
+    max-width: 480px;
+    min-width: 0; /* add this */
+    gap: 0.5rem;
+    margin: 0 auto;
+}
+
+.gui-player-wrapper .video-container {
+    width: 100%;
+    height: 100%;
+}
+
+.gui-player-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}

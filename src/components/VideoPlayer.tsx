@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
+import {useEffect, useState, useRef} from 'react';
 import './VideoPlayer.css';
-import { ConsoleStore } from '../store/consoleStore.ts';
+import {ConsoleStore} from '../store/consoleStore.ts';
 
 export const VideoPlayer: React.FC = () => {
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -29,14 +29,14 @@ export const VideoPlayer: React.FC = () => {
                 if (iframeRef.current?.contentWindow) {
                     // Send messages after ensuring iframe is ready
                     const commonMessages = [
-                        { type: 'play' },
-                        { action: 'play' },
+                        {type: 'play'},
+                        {action: 'play'},
                         'play'
                     ];
                     commonMessages.forEach(msg => {
                         iframeRef.current!.contentWindow?.postMessage({type: 'play'}, '*');
                     });
-                }else{
+                } else {
                     console.log("Iframe not ready yet");
                 }
             }, 1000);
@@ -98,7 +98,6 @@ export const VideoPlayer: React.FC = () => {
     }, [iframeReady]);
 
 
-
     return (
         <div className="video-container">
             {videoUrl ? (
@@ -106,16 +105,18 @@ export const VideoPlayer: React.FC = () => {
                     ref={iframeRef}
                     key={videoUrl}
                     src={videoUrl}
-                    allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; microphone; camera; display-capture; autoplay; cross-origin-isolated; midi; geolocation; gyroscope; magnetometer; payment; sync-xhr; usb; accelerometer; ambient-light-sensor; encrypted-media; publickey-credentials-get"
-                    //sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-modals allow-downloads allow-pointer-lock"
+                    //allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; autoplay; cross-origin-isolated; midi; sync-xhr; ambient-light-sensor; publickey-credentials-get"
+                    allow="fullscreen *; autoplay *; clipboard-write *; encrypted-media *; picture-in-picture *; web-share *; autoplay *; cross-origin-isolated *; midi *; sync-xhr *; publickey-credentials-get"
+                    allowFullScreen={true}
+                    {...{allowfullscreen: true}}
                     width="100%"
                     height="100%"
                     onLoad={handleIframeLoad}
-                    id="video_player_iframe" // Add a specific ID that the player might be looking for
+                    id="video_player_iframe"
                 />
             ) : (
                 <div className="video-placeholder">
-                    <img src="/ratflix.webp" alt="video icon" className="video-icon" />
+                    <img src="/ratflix.webp" alt="video icon" className="video-icon"/>
                 </div>
             )}
         </div>
