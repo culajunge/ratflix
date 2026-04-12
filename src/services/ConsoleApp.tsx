@@ -254,8 +254,8 @@ export class ConsoleApp {
 
     private reloadVideoPlayer() {
         if (!this.currentURL) return;
-
-        this.playLastWatched();
+        if (this.currentMediaResult.media_type == 'movie') this.playCurrentMovie();
+        else this.playLastWatched();
     }
 
     public async search(query: string): Promise<void> {

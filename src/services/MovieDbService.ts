@@ -16,13 +16,13 @@ export class MovieDbService {
             name: "vidsrc (stable)",
         },
         {
-            name: "superembed",
+            name: "multiembed",
         },
         {
             name: "nontogo (high quality)"
         },
         {
-            name: "autoembed"
+            name: "GoDrive (new)"
         },
         {
             name: "2embed"
@@ -31,25 +31,10 @@ export class MovieDbService {
             name: "vidsrc.me"
         },
         {
-            name: "fsapi.xyz (unreliable)"
-        },
-        {
-            name: "curtstream (unreliable)"
-        },
-        {
-            name: "moviewp (unreliable)"
-        },
-        {
-            name: "apimdb (is no more)"
-        },
-        {
             name: "gomo.to"
         },
         {
             name: "vidcloud"
-        },
-        {
-            name: "getsuperembed"
         },
         {
             name: "databasegdriveplayer"
@@ -110,29 +95,19 @@ export class MovieDbService {
             case 2:
                 return await this.getTvShowUrl3(showId.toString(), seasonNumber, episodeNumber);
             case 3:
-                return this.getTvShowUrl4(showId.toString(), seasonNumber, episodeNumber);
+                return await this.GetTvShowGoDrive(showId.toString(), seasonNumber, episodeNumber);
             case 4:
                 // vidsrc.me (movies only) - does not support TV shows
-                return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
-            case 5:
                 return this.GetTvShow2Embed(showId.toString(), seasonNumber, episodeNumber);
+            case 5:
+                return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
             case 6:
-                return this.getTvShowUrlFsapi(showId.toString(), seasonNumber, episodeNumber);
-            case 7:
-                return this.getTvShowUrlCurtstream(showId.toString(), seasonNumber, episodeNumber);
-            case 8:
-                return this.getTvShowUrlMoviewp(showId.toString(), seasonNumber, episodeNumber);
-            case 9:
-                return this.getTvShowUrlApimdb(showId.toString(), seasonNumber, episodeNumber);
-            case 10:
                 // gomo.to (movies only) - does not support TV shows
                 return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
-            case 11:
+            case 7:
                 // vidcloud (movies only) - does not support TV shows
                 return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
-            case 12:
-                return this.getTvShowUrlGetsuperembed(showId.toString(), seasonNumber, episodeNumber);
-            case 13:
+            case 8:
                 return this.getTvShowUrlDatabasegdriveplayer(showId.toString(), seasonNumber, episodeNumber);
             default:
                 return `${TV_BASE_URL_1}${showId}&season=${seasonNumber}&episode=${episodeNumber}`;
@@ -149,26 +124,18 @@ export class MovieDbService {
             case 2:
                 return this.getMovieUrl3(movieId);
             case 3:
-                return this.getMovieUrl4(movieId);
+                return this.GetMovieGoDrive(movieId);
             case 4:
-                return this.getMovieUrlVidsrcMe(movieId);
-            case 5:
                 return await this.GetMovie2Embed(movieId);
+            case 5:
+                return this.getMovieUrlVidsrcMe(movieId);
             case 6:
-                return this.getMovieUrlFsapi(movieId);
-            case 7:
-                return this.getMovieUrlCurtstream(movieId);
-            case 8:
-                return this.getMovieUrlMoviewp(movieId);
-            case 9:
-                return this.getMovieUrlApimdb(movieId);
-            case 10:
                 return this.getMovieUrlGomo(movieId);
-            case 11:
+            case 7:
                 return this.getMovieUrlVidcloud(movieId);
-            case 12:
+            case 8:
                 return this.getMovieUrlGetsuperembed(movieId);
-            case 13:
+            case 9:
                 return 'https://hackertyper.net/';
             default:
                 return `${MOVIE_BASE_URL_1}${movieId}`;
@@ -210,7 +177,7 @@ export class MovieDbService {
     }
 
     static async getTvShowUrl3(showId: string, season: number, episode: number): Promise<string> {
-        var imdbid = await this.getImdbId(showId, 'tv');
+        const imdbid = await this.getImdbId(showId, 'tv');
         const TV_BASE_URL_3 = `https://www.NontonGo.win/embed/tv/${imdbid}/${season.toString()}/${episode.toString()}`;
         return TV_BASE_URL_3;
     }
@@ -323,6 +290,15 @@ export class MovieDbService {
 
     static async GetTvShow2Embed(showId: string, season: number, episode: number): Promise<string> {
         return `https://www.2embed.cc/embedtv/${showId}&s=${season}&e=${episode}`;
+    }
+
+    static async GetMovieGoDrive(movieId: string): Promise<string> {
+        const id = this.getImdbId(movieId, 'movie');
+        return `https://godriveplayer.com/player.php?imdb=${id}`;
+    }
+
+    static async GetTvShowGoDrive(id: string, season: number, episode: number): Promise<string> {
+        return `https://godriveplayer.com/player.php?type=series&tmdb=${id}&season=${season}&episode=${episode}`;
     }
 
 }
