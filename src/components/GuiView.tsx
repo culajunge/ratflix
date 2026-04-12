@@ -44,8 +44,23 @@ const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
         const history = JSON.parse(localStorage.getItem('watchHistory') || '[]') as WatchProgress[];
         setGuiState(prev => ({...prev, watchHistory: history, mode: 'home'}));
 
+        const handleMouseButton = (e: MouseEvent) => {
+            if (e.button === 3) {   // thumb back button
+                e.preventDefault();
+                app().goBack();
+            }
+            if (e.button === 4) {   // thumb forward button
+                e.preventDefault();
+                // forward can trigger next episode
+                app().playNextEpisode();
+            }
+        };
+
+        window.addEventListener('mouseup', handleMouseButton);
+
         return () => {
             window.removeEventListener('guiStateUpdate', handleGuiState as EventListener);
+            window.removeEventListener('mouseup', handleMouseButton);
         };
     }, []);
 
@@ -147,14 +162,18 @@ const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
                     </div>
                     <div className="gui-tiles">
                         {currentSeason.episodes.map(ep => (
-                            <div key={ep.id} className="gui-tile gui-tile--episode">
+                            <div key={ep.id} className="gui-tile gui-tile--episode"
+                                 onClick={() => handlePlayEpisode(ep.episode_number)}>
                                 <div className="gui-tile-info">
                                     <span className="gui-tile-ep-num">E{ep.episode_number}</span>
                                     <span className="gui-tile-title">{ep.name}</span>
                                 </div>
                                 <button
                                     className={`gui-play-btn ${guiState.currentEpisodeIndex === ep.episode_number ? 'gui-play-btn--active' : ''}`}
-                                    onClick={() => handlePlayEpisode(ep.episode_number)}
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        handlePlayEpisode(ep.episode_number);
+                                    }}
                                 >▶
                                 </button>
                             </div>
@@ -206,20 +225,35 @@ const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
                         <span>Results</span>
                     </div>
                     <div className="gui-tiles">
-                        {searchResults.map((result, i) => (
-                            <div key={result.id} className="gui-tile">
-                                <div className="gui-tile-info">
-                                    <span className="gui-tile-title">{result.title ?? result.name}</span>
-                                    <span className="gui-tile-meta">
-                                        {result.media_type === 'tv' ? 'TV' : 'Movie'} · {(result.release_date ?? result.first_air_date ?? '').slice(0, 4)}
-                                    </span>
+                        {searchResults.map((result, i) => {
+                            const isMovie = result.media_type === 'movie';
+                            const year = (result.release_date ?? result.first_air_date ?? '').slice(0, 4);
+                            const rating = result.vote_average ? result.vote_average.toFixed(1) : null;
+
+                            return (
+                                <div key={result.id} className="gui-tile" onClick={() => handlePlayMedia(i)}>
+                                    <div className="gui-tile-info">
+                                        <span className="gui-tile-title">{result.title ?? result.name}</span>
+                                        <span className="gui-tile-meta">
+                    {isMovie ? 'Movie' : 'TV'}{year ? ` · ${year}` : ''}{rating ? ` · ★${rating}` : ''}
+                </span>
+                                    </div>
+                                    <div className="gui-tile-actions">
+                                        {!isMovie && (
+                                            <button className="gui-select-btn" onClick={e => {
+                                                e.stopPropagation();
+                                                handleSelectResult(i);
+                                            }}>→</button>
+                                        )}
+                                        <button className="gui-play-btn" onClick={e => {
+                                            e.stopPropagation();
+                                            handlePlayMedia(i);
+                                        }}>▶
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="gui-tile-actions">
-                                    <button className="gui-select-btn" onClick={() => handleSelectResult(i)}>→</button>
-                                    <button className="gui-play-btn" onClick={() => handlePlayMedia(i)}>▶</button>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             );
@@ -236,13 +270,17 @@ const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
                 ) : (
                     <div className="gui-tiles">
                         {[...watchHistory].reverse().map((h) => (
-                            <div key={h.showId} className="gui-tile">
+                            <div key={h.showId} className="gui-tile" onClick={() => handlePlayFromHistory(h)}>
                                 <div className="gui-tile-info">
                                     <span className="gui-tile-title">{h.showName}</span>
                                     <span className="gui-tile-meta">S{h.seasonNumber} E{h.episodeNumber}</span>
                                 </div>
                                 <div className="gui-tile-actions">
-                                    <button className="gui-play-btn" onClick={() => handlePlayFromHistory(h)}>▶</button>
+                                    <button className="gui-play-btn" onClick={e => {
+                                        e.stopPropagation();
+                                        handlePlayFromHistory(h);
+                                    }}>▶
+                                    </button>
                                 </div>
                             </div>
                         ))}
@@ -284,7 +322,7 @@ const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
                         ? <div className="gui-player-wrapper"><VideoPlayer/></div>
                         : <div className="gui-placeholder">
                             <img src="/ratflix.webp" alt="ratflix" className="gui-placeholder-logo"/>
-                            <p>"Nimm dir Zeit und nicht das Leben, scheiß in Klo in nicht daneben" - Gandhi</p>
+                            <p>Ratflix</p>
                         </div>
                     }
                 </main>
@@ -314,6 +352,7 @@ const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
 // Fetches season count directly since ConsoleApp doesn't expose it as structured data
 
 import {MovieDbService} from '../services/MovieDbService.ts';
+import console from "./Console.tsx";
 
 const SeasonList: React.FC<{ mediaId: number; onSelect: (n: number) => void }> = ({mediaId, onSelect}) => {
     const [seasons, setSeasons] = useState<number[]>([]);

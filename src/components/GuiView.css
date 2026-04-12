@@ -152,6 +152,7 @@
 }
 
 .gui-tile {
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -212,6 +213,12 @@
     cursor: pointer;
     font-size: 0.85rem;
     transition: border-color 0.1s, color 0.1s;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
 }
 
 .gui-select-btn:hover {
@@ -279,11 +286,11 @@
 }
 
 .gui-placeholder-logo {
-    width: 84px;
+    width: 100px;
 }
 
 .gui-placeholder p {
-    font-size: 0.9rem;
+    font-size: 1.5rem;
     opacity: 0.6;
     text-align: center;
     max-width: 240px; /* forces the line break */
