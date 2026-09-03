@@ -13,7 +13,7 @@ export class MovieDbService {
 
     public static readonly vidProviders = [
         {
-            name: "vidsrc (stable)",
+            name: "Default",
         },
         {
             name: "multiembed (high quality)",
@@ -149,12 +149,12 @@ export class MovieDbService {
             //Not working
             url += '&autoplay=1';
         }
-        return url;
+        return this.GetMovie2Embed(movieId);
     }
 
     static async getTvShowUrl1(showId: string, season: number, episode: number, autoplay: boolean): Promise<string> {
-        const url = `vidsrc.to/embed/tv/${showId}/${season}/${episode}`;
-        return url;
+        //const url = `vidsrc.to/embed/tv/${showId}/${season}/${episode}`;
+        return this.GetTvShow2Embed(showId, season, episode);
     }
 
     //multiembed

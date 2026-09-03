@@ -10,27 +10,27 @@ import {ConsoleStore} from './store/consoleStore.ts';
 type ViewMode = 'cli' | 'gui';
 const DEFAULT_VIEW: ViewMode = 'gui';
 
+function getInitialViewMode(): ViewMode {
+    const saved = localStorage.getItem('viewMode');
+    return saved === 'cli' || saved === 'gui' ? saved : DEFAULT_VIEW;
+}
+
 function App() {
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
     const [isVideoVisible, setIsVideoVisible] = useState(true);
-    const [viewMode, setViewMode] = useState<ViewMode>(DEFAULT_VIEW);
+    const [viewMode, setViewMode] = useState<ViewMode>(getInitialViewMode());
     const appReady = useRef(false);
 
-    // Create and register ConsoleApp once, regardless of view mode
+    if (!ConsoleStore.getConsoleApp()) {
+        const app = new ConsoleApp((text: string) => {
+        });
+        ConsoleStore.setConsoleApp(app);
+    }
+
     useEffect(() => {
         if (appReady.current) return;
         appReady.current = true;
-
-        // Only create if not already registered (Console.tsx may do it too)
-        if (!ConsoleStore.getConsoleApp()) {
-            const app = new ConsoleApp((text: string) => {
-                // In GUI mode we don't render output anywhere visible,
-                // but we still need the side effects (state changes, events)
-                // Console.tsx will override this handler when in CLI mode
-            });
-            ConsoleStore.setConsoleApp(app);
-            app.initialize();
-        }
+        ConsoleStore.getConsoleApp()!.initialize();
     }, []);
 
     useEffect(() => {
@@ -41,7 +41,9 @@ function App() {
         };
         const handleToggle = () => setIsVideoVisible(prev => !prev);
         const handleSwitchView = (e: CustomEvent) => {
-            setViewMode(e.detail as ViewMode);
+            const mode = e.detail as ViewMode;
+            setViewMode(mode);
+            localStorage.setItem('viewMode', mode);
         };
 
         window.addEventListener('playVideo', handleVideoPlay as EventListener);
