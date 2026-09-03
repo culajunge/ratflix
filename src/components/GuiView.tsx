@@ -2,7 +2,6 @@ import React, {useEffect, useState, useRef} from 'react';
 import VideoPlayer from './VideoPlayer.tsx';
 import {ConsoleStore} from '../store/consoleStore.ts';
 import {GuiState} from '../types/GuiState.ts';
-import {MediaResult, Season} from '../types/MediaTypes.ts';
 import {WatchProgress} from '../types/WatchHistory.ts';
 import './GuiView.css';
 
@@ -10,8 +9,6 @@ interface GuiViewProps {
     videoUrl: string | null;
     isVideoVisible: boolean;
 }
-
-const TMDB_IMG = 'https://image.tmdb.org/t/p/w200';
 
 const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
     const [guiState, setGuiState] = useState<GuiState>({
@@ -330,19 +327,21 @@ const GuiView: React.FC<GuiViewProps> = ({videoUrl, isVideoVisible}) => {
 
             {/* ── Footer ── */}
             <footer className="gui-footer">
-                <button className="gui-nav-btn" onClick={handlePrev}>⏮ Prev</button>
+                <div className="gui-nav-group">
+                    <button className="gui-nav-btn" onClick={handlePrev}>⏮ Prev</button>
 
-                <select
-                    className="gui-provider-select"
-                    value={providerIndex}
-                    onChange={handleProviderChange}
-                >
-                    {providers.map((p, i) => (
-                        <option key={i} value={i}>{p.name}</option>
-                    ))}
-                </select>
+                    <select
+                        className="gui-provider-select"
+                        value={providerIndex}
+                        onChange={handleProviderChange}
+                    >
+                        {providers.map((p, i) => (
+                            <option key={i} value={i}>{p.name}</option>
+                        ))}
+                    </select>
 
-                <button className="gui-nav-btn" onClick={handleNext}>Next ⏭</button>
+                    <button className="gui-nav-btn" onClick={handleNext}>Next ⏭</button>
+                </div>
             </footer>
         </div>
     );

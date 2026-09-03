@@ -5,7 +5,7 @@ const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
 //vidsrc
-const domainSuffix1 = "xyz";
+const domainSuffix1 = "to";
 const MOVIE_BASE_URL_1 = `https://vidsrc.${domainSuffix1}/embed/movie?tmdb=`;
 const TV_BASE_URL_1 = `https://vidsrc.${domainSuffix1}/embed/tv?tmdb=`;
 
@@ -16,13 +16,13 @@ export class MovieDbService {
             name: "vidsrc (stable)",
         },
         {
-            name: "multiembed",
+            name: "multiembed (high quality)",
         },
         {
-            name: "nontogo (high quality)"
+            name: "nontogo (embed broken)"
         },
         {
-            name: "GoDrive (new)"
+            name: "Multiembed VIP"
         },
         {
             name: "2embed"
@@ -95,7 +95,7 @@ export class MovieDbService {
             case 2:
                 return await this.getTvShowUrl3(showId.toString(), seasonNumber, episodeNumber);
             case 3:
-                return await this.GetTvShowGoDrive(showId.toString(), seasonNumber, episodeNumber);
+                return await this.GetTvShowMultiEmbedVip(showId.toString(), seasonNumber, episodeNumber);
             case 4:
                 // vidsrc.me (movies only) - does not support TV shows
                 return this.GetTvShow2Embed(showId.toString(), seasonNumber, episodeNumber);
@@ -124,7 +124,7 @@ export class MovieDbService {
             case 2:
                 return this.getMovieUrl3(movieId);
             case 3:
-                return this.GetMovieGoDrive(movieId);
+                return this.GetMovieMultiEmbedVip(movieId);
             case 4:
                 return await this.GetMovie2Embed(movieId);
             case 5:
@@ -144,7 +144,7 @@ export class MovieDbService {
 
     //vidsrc
     static async getMovieUrl1(movieId: string, autoplay: boolean): Promise<string> {
-        let url = `${MOVIE_BASE_URL_1}${movieId}`;
+        let url = `vidsrc.to/embed/movie/${movieId}`;
         if (autoplay) {
             //Not working
             url += '&autoplay=1';
@@ -153,11 +153,7 @@ export class MovieDbService {
     }
 
     static async getTvShowUrl1(showId: string, season: number, episode: number, autoplay: boolean): Promise<string> {
-        let url = `${TV_BASE_URL_1}${showId}&season=${season}&episode=${episode}`;
-        if (autoplay) {
-            // Not working
-            url += '&autoplay=1';
-        }
+        const url = `vidsrc.to/embed/tv/${showId}/${season}/${episode}`;
         return url;
     }
 
@@ -171,7 +167,7 @@ export class MovieDbService {
     //Nontongo
 
     static async getMovieUrl3(movieId: string): Promise<string> {
-        var imdbid = await this.getImdbId(movieId, 'movie');
+        const imdbid = await this.getImdbId(movieId, 'movie');
         const MOVIE_BASE_URL_3 = `https://www.NontonGo.win/embed/movie/${imdbid}`;
         return MOVIE_BASE_URL_3;
     }
@@ -292,13 +288,13 @@ export class MovieDbService {
         return `https://www.2embed.cc/embedtv/${showId}&s=${season}&e=${episode}`;
     }
 
-    static async GetMovieGoDrive(movieId: string): Promise<string> {
+    static async GetMovieMultiEmbedVip(movieId: string): Promise<string> {
         const id = this.getImdbId(movieId, 'movie');
-        return `https://godriveplayer.com/player.php?imdb=${id}`;
+        return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`;
     }
 
-    static async GetTvShowGoDrive(id: string, season: number, episode: number): Promise<string> {
-        return `https://godriveplayer.com/player.php?type=series&tmdb=${id}&season=${season}&episode=${episode}`;
+    static async GetTvShowMultiEmbedVip(id: string, season: number, episode: number): Promise<string> {
+        return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`;
     }
 
 }

@@ -105,10 +105,11 @@ export const VideoPlayer: React.FC = () => {
                     ref={iframeRef}
                     key={videoUrl}
                     src={videoUrl}
+                    referrerPolicy="origin"
                     //allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; autoplay; cross-origin-isolated; midi; sync-xhr; ambient-light-sensor; publickey-credentials-get"
                     allow="fullscreen *; autoplay *; clipboard-write *; encrypted-media *; picture-in-picture *; web-share *; autoplay *; cross-origin-isolated *; midi *; sync-xhr *; publickey-credentials-get"
                     allowFullScreen={true}
-                    {...{allowfullscreen: true}}
+                    {...{allowFullScreen: true}}
                     width="100%"
                     height="100%"
                     onLoad={handleIframeLoad}
